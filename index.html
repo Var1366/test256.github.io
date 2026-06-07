@@ -31,7 +31,7 @@
 
 Telegram.WebApp.ready();
 
-const user = Telegram.WebApp.initDataUnsafe.user;
+const user = Telegram.WebApp.initDataUnsafe;
 
 document.getElementById("userInfo").textContent =
     JSON.stringify(user, null, 2);
