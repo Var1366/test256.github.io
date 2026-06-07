@@ -26,15 +26,21 @@
 
 
 <pre id="userInfo">در حال دریافت...</pre>
+<pre id="initDataInfo">در حال دریافت...</pre>
 
 <script>
 
 Telegram.WebApp.ready();
 
-const user = Telegram.WebApp.initData;
+const user = Telegram.WebApp.initDataUnsafe.user;
+const initData = Telegram.WebApp.initData;
 
 document.getElementById("userInfo").textContent =
     JSON.stringify(user, null, 2);
+
+
+    document.getElementById("initDataInfo").textContent =
+    JSON.stringify(initData, null, 2);
 
 </script>
 
