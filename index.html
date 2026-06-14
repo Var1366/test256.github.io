@@ -6,6 +6,46 @@
     <title>خرید اشتراک مینی‌اپ</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://unpkg.com/@tonconnect/ui@2.0.6/dist/tonconnect-ui.min.js"></script>
+
+<script>
+    // منتظر می‌مانیم تا صفحه و اسکریپت‌ها کاملاً لود شوند
+    window.addEventListener('DOMContentLoaded', () => {
+        
+        // فعال‌سازی مینی‌اپ تلگرام
+        if (window.Telegram?.WebApp) {
+            Telegram.WebApp.ready();
+        }
+
+        // 🛠️ حل مشکل خطا: پیدا کردن کلاس درست در لایبرری (نسخه جدید یا قدیم)
+        const TonSDK = window.TONConnectSDK || window.TONConnectUI;
+        
+        if (!TonSDK || !TonSDK.TonConnectUI) {
+            console.error("خطا: کتابخانه TON Connect لود نشد. اینترنت یا لینک CDN را بررسی کنید.");
+            alert("خطا در بارگذاری شبکه TON. لطفاً صفحه را رفرش کنید.");
+            return;
+        }
+
+        // مقداردهی اولیه بدون خطا با استفاده از متغیر تایید شده
+        const tonConnectUI = new TonSDK.TonConnectUI({
+            manifestUrl: 'https://var1366.github.io/test256.github.io/tonconnect-manifest.json',
+            buttonRootId: 'ton-connect-btn'
+        });
+
+        console.log("TON Connect با موفقیت راه‌اندازی شد.");
+
+        // گوش دادن به وضعیت کیف پول
+        tonConnectUI.onStatusChange(wallet => {
+            const payButton = document.getElementById('pay-button');
+            if (payButton) {
+                if (wallet) {
+                    payButton.style.display = 'inline-block';
+                } else {
+                    payButton.style.display = 'none';
+                }
+            }
+        });
+    });
+</script>
     <style>
         body { font-family: Tahoma, sans-serif; text-align: center; padding: 20px; background-color: #f4f7f6; }
         .btn { padding: 12px 24px; font-size: 16px; border: none; border-radius: 8px; cursor: pointer; margin: 10px; }
