@@ -31,7 +31,7 @@
         const wallet = await tonConnectUI.connectWallet();
 
         walletAddress = wallet.account.address;
-
+        alert(walletAddress);
         document.getElementById('payBtn').disabled = false;
     };
 
