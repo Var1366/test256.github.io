@@ -1,77 +1,99 @@
 <!DOCTYPE html>
-<html>
+<html lang="fa" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>Subscribe</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>خرید اشتراک مینی‌اپ</title>
+    
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://unpkg.com/@tonconnect/ui@2.0.0/dist/tonconnect-ui.min.js"></script>
+
+    <style>
+        body { font-family: Tahoma, sans-serif; text-align: center; padding: 40px 20px; background-color: #f4f7f6; color: #333; }
+        .container { max-width: 400px; margin: 0 auto; background: white; padding: 30px; border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        #ton-connect-btn { display: inline-block; margin: 20px 0; }
+        .btn-pay { width: 100%; padding: 14px; font-size: 16px; font-weight: bold; border: none; border-radius: 10px; cursor: pointer; background-color: #0088cc; color: white; display: none; }
+    </style>
 </head>
 <body>
 
-<h2>Subscription - 10 USDT</h2>
+    <div class="container">
+        <h2>خرید اشتراک ماهانه</h2>
+        <p>مبلغ اشتراک: <strong>۱۰ تتر ($USDT$)</strong></p>
 
-<button id="connectBtn">
-    Connect Wallet
-</button>
+        <div id="ton-connect-btn"></div>
+        <br>
+        <button id="pay-button" class="btn-pay" onclick="sendPayment()">پرداخت ۱۰ تتر</button>
+    </div>
 
-<button id="payBtn" disabled>
-    Pay 10 USDT
-</button>
+    <script>
+        let tonConnectUI = null;
 
-<script>
-    const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
-        manifestUrl:
-            'https://your-domain.com/tonconnect-manifest.json'
-    });
+        window.addEventListener('load', async () => {
+            if (window.Telegram?.WebApp) {
+                Telegram.WebApp.ready();
+            }
 
-    let walletAddress = null;
+            // 🔍 راه‌حل کلیدی: پیدا کردن نمونه معتبر لایبرری در اشیاء مختلف پنجره مرورگر
+            const TON = window.TON || window.TonConnectUI || window.TONConnectSDK;
+            
+            if (TON && TON.TonConnectUI) {
+                // اگر لایبرری به صورت شیء سنتی لود شده باشد
+                tonConnectUI = new TON.TonConnectUI({
+                    manifestUrl: 'https://var1366.github.io/test256.github.io/tonconnect-manifest.json',
+                    buttonRootId: 'ton-connect-btn'
+                });
+            } 
+            else if (window.TonConnectUI && typeof window.TonConnectUI.create === 'function') {
+                // روش مدرن نسخه ۲ (استفاده از متد ساخت خودکار)
+                tonConnectUI = await window.TonConnectUI.create({
+                    manifestUrl: 'https://var1366.github.io/test256.github.io/tonconnect-manifest.json',
+                    buttonRootId: 'ton-connect-btn'
+                });
+            }
+            else {
+                alert("خطا: ساختار کتابخانه TON Connect در این مرورگر قابل شناسایی نیست.");
+                return;
+            }
 
-    document.getElementById('connectBtn')
-        .onclick = async () => {
+            console.log("TON Connect با موفقیت راه‌اندازی شد.");
 
-        const wallet = await tonConnectUI.connectWallet();
-
-        walletAddress =
-            wallet.account.address;
-
-        document.getElementById('payBtn')
-            .disabled = false;
-    };
-
-    document.getElementById('payBtn')
-        .onclick = async () => {
-
-        const response = await fetch(
-            "/api/payments/create-subscription",
-            {
-                method: "POST",
-                headers: {
-                    "Content-Type":
-                        "application/json"
+            // مدیریت نمایش دکمه پرداخت
+            tonConnectUI.onStatusChange(wallet => {
+                const payButton = document.getElementById('pay-button');
+                if (payButton) {
+                    payButton.style.display = wallet ? 'block' : 'none';
                 }
             });
+        });
 
-        const payment =
-            await response.json();
+        async function sendPayment() {
+            if (!tonConnectUI) return;
 
-        const transaction = {
-            validUntil:
-                Math.floor(Date.now() / 1000) + 600,
-            messages: [
-                {
-                    address:
-                        payment.address,
-                    amount:
-                        payment.amountNano,
-                    payload:
-                        payment.memoBase64
-                }
-            ]
-        };
+            const merchantAddress = "EQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAM9c"; 
 
-        await tonConnectUI
-            .sendTransaction(transaction);
-    };
-</script>
+            const transaction = {
+                validUntil: Math.floor(Date.now() / 1000) + 360,
+                messages: [
+                    {
+                        address: merchantAddress,
+                        amount: "50000000" // کارمزد به نانو تون
+                    }
+                ]
+            };
 
+            try {
+                const result = await tonConnectUI.sendTransaction(transaction);
+                verifyPaymentOnBackend(result.boc);
+            } catch (error) {
+                alert("تراکنش لغو شد.");
+            }
+        }
+
+        async function verifyPaymentOnBackend(boc) {
+            // کد ارسال به بک‌آند ASP.NET Core شما
+            console.log("BOC ارسالی به دات‌نت:", boc);
+        }
+    </script>
 </body>
 </html>
