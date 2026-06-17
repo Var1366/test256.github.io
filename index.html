@@ -1,149 +1,188 @@
 <!DOCTYPE html>
-<html lang="fa">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Telegram Mini App</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium Membership</title>
 
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://unpkg.com/@tonconnect/ui@2.0.0/dist/tonconnect-ui.min.js"></script>
 
     <style>
         body {
-            font-family: Tahoma;
-            padding: 20px;
+            font-family: Arial, sans-serif;
+            background: #0f172a;
+            color: white;
+            text-align: center;
+            padding: 30px;
+        }
+
+        .card {
+            max-width: 450px;
+            margin: auto;
+            background: #1e293b;
+            padding: 30px;
+            border-radius: 20px;
+        }
+
+        h1 {
+            margin-bottom: 10px;
+        }
+
+        .price {
+            font-size: 26px;
+            color: #38bdf8;
+            margin-bottom: 30px;
         }
 
         button {
-            width: 250px;
-            height: 45px;
-            margin-top: 10px;
+            width: 100%;
+            height: 50px;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
             cursor: pointer;
+            margin-top: 15px;
         }
 
-        #walletAddress {
+        #payBtn {
+            background: #10b981;
+            color: white;
+        }
+
+        #payBtn:disabled {
+            background: #475569;
+            cursor: not-allowed;
+        }
+
+        #status {
             margin-top: 20px;
-            word-break: break-all;
+            color: #cbd5e1;
         }
     </style>
 </head>
 <body>
 
-<h2>Telegram Mini App</h2>
+<div class="card">
+    <h1>Premium Membership</h1>
 
-<button id="connectBtn">
-    Connect Wallet
-</button>
+    <div class="price">
+        Membership Price: 10 USDT
+    </div>
 
-<button id="payBtn" disabled>
-    Pay 10 USDT
-</button>
+    <div id="ton-connect"></div>
 
-<div id="walletAddress"></div>
+    <button id="payBtn" disabled>
+        Pay 10 USDT
+    </button>
+
+    <div id="status"></div>
+</div>
 
 <script>
+    Telegram.WebApp.ready();
+    Telegram.WebApp.expand();
 
-    const tg = window.Telegram.WebApp;
-    tg.ready();
+    const status = document.getElementById("status");
+    const payBtn = document.getElementById("payBtn");
 
-    let currentWallet = null;
+    let walletAddress = null;
 
     const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
-        manifestUrl: 'https://var1366.github.io/test256.github.io/tonconnect-manifest.json'
+        manifestUrl:
+            "https://yourdomain.com/tonconnect-manifest.json",
+        buttonRootId: "ton-connect"
     });
 
-    async function saveWallet(address) {
+    tonConnectUI.onStatusChange(wallet => {
+        if (!wallet)
+            return;
 
-        const token =
-            localStorage.getItem("jwt");
+        walletAddress = wallet.account.address;
 
-        await fetch('/api/wallet/connect', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + token
-            },
-            body: JSON.stringify({
-                walletAddress: address
-            })
-        });
-    }
+        payBtn.disabled = false;
 
-    async function loadWallet() {
+        status.innerHTML =
+            "Wallet Connected<br>" +
+            walletAddress;
+    });
 
-        await tonConnectUI.connectionRestored;
+    payBtn.addEventListener("click", async () => {
 
-        if (tonConnectUI.wallet) {
+        try {
 
-            currentWallet =
-                tonConnectUI.wallet.account.address;
+            payBtn.disabled = true;
+            status.innerHTML = "Waiting for payment...";
 
-            document.getElementById('walletAddress')
-                .innerText =
-                'Wallet: ' + currentWallet;
-
-            document.getElementById('payBtn')
-                .disabled = false;
-
-            document.getElementById('connectBtn')
-                .style.display = 'none';
-
-            await saveWallet(currentWallet);
-        }
-    }
-
-    document.getElementById('connectBtn')
-        .onclick = async () => {
-
-            const wallet =
-                await tonConnectUI.connectWallet();
-
-            currentWallet =
-                wallet.account.address;
-
-            document.getElementById('walletAddress')
-                .innerText =
-                'Wallet: ' + currentWallet;
-
-            document.getElementById('payBtn')
-                .disabled = false;
-
-            document.getElementById('connectBtn')
-                .style.display = 'none';
-
-            await saveWallet(currentWallet);
-        };
-
-    document.getElementById('payBtn')
-        .onclick = async () => {
-
-            const token =
-                localStorage.getItem("jwt");
-
-            const response =
-                await fetch(
-                    '/api/payments/create',
+            const transaction = {
+                validUntil:
+                    Math.floor(Date.now() / 1000) + 600,
+                messages: [
                     {
-                        method: 'POST',
-                        headers: {
-                            'Authorization':
-                                'Bearer ' + token
-                        }
-                    });
+                        address:
+                            "YOUR_TON_WALLET_ADDRESS",
 
-            const payment =
-                await response.json();
+                        amount:
+                            "10000000"
+                    }
+                ]
+            };
 
-            alert(
-                'Address : ' + payment.address +
-                '\nMemo : ' + payment.memo +
-                '\nAmount : 10 USDT'
+            const result =
+                await tonConnectUI.sendTransaction(
+                    transaction
+                );
+
+            const telegramUser =
+                Telegram.WebApp.initDataUnsafe.user;
+
+            const response = await fetch(
+                "/api/payment/confirm",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+                    body: JSON.stringify({
+                        telegramUserId:
+                            telegramUser.id,
+
+                        userName:
+                            telegramUser.username,
+
+                        walletAddress:
+                            walletAddress,
+
+                        transactionHash:
+                            result.boc
+                    })
+                }
             );
 
-            // اینجا بعداً تراکنش USDT-TON را می‌سازیم
-        };
+            const data =
+                await response.json();
 
-    loadWallet();
+            if (data.success) {
+                status.innerHTML =
+                    "✅ Membership Activated";
+            }
+            else {
+                status.innerHTML =
+                    "❌ Payment Failed";
+            }
 
+        }
+        catch (e) {
+
+            console.log(e);
+
+            status.innerHTML =
+                "❌ Payment Cancelled";
+
+            payBtn.disabled = false;
+        }
+    });
 </script>
 
 </body>
