@@ -2,9 +2,34 @@
 <html lang="fa" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UMiniApp - Test Panel</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>UMiniApp</title>
+
+    <!-- Telegram Web App SDK -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+    <!-- TonConnect UI -->
+    <script src="https://unpkg.com/@tonconnect/ui@2.0.9/dist/tonconnect-ui.min.js"></script>
+
     <style>
+        :root {
+            --bg-primary: #1a1a2e;
+            --bg-secondary: #16213e;
+            --bg-card: #1e2746;
+            --bg-input: #2a3050;
+            --accent: #00d4aa;
+            --accent-hover: #00f0c0;
+            --text-primary: #ffffff;
+            --text-secondary: #8892b0;
+            --text-muted: #5a6380;
+            --border: #2a3050;
+            --danger: #e74c3c;
+            --warning: #f39c12;
+            --success: #00d4aa;
+            --radius: 16px;
+            --radius-sm: 10px;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -12,402 +37,71 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, sans-serif;
-            background: #0f0f1a;
-            color: #e0e0e0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
             min-height: 100vh;
+            overflow-x: hidden;
         }
 
-        /* ---- Top Bar ---- */
-        .top-bar {
-            background: #1a1a2e;
-            padding: 12px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid #333;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-            .top-bar h1 {
-                font-size: 18px;
-                color: #00d4aa;
-            }
-
-            .top-bar .config-area {
-                display: flex;
-                gap: 8px;
-                align-items: center;
-            }
-
-            .top-bar input {
-                background: #2a2a3e;
-                border: 1px solid #444;
-                color: #fff;
-                padding: 6px 10px;
-                border-radius: 6px;
-                font-size: 12px;
-                width: 280px;
-            }
-
-            .top-bar button {
-                padding: 6px 14px;
-                font-size: 12px;
-            }
-
-        /* ---- Tabs ---- */
-        .tab-container {
-            display: flex;
-            background: #1a1a2e;
-            border-bottom: 1px solid #333;
-            overflow-x: auto;
-        }
-
-        .tab-btn {
-            padding: 12px 20px;
-            background: none;
-            border: none;
-            color: #888;
-            cursor: pointer;
-            font-size: 14px;
-            border-bottom: 3px solid transparent;
-            white-space: nowrap;
-            transition: all 0.2s;
-        }
-
-            .tab-btn:hover {
-                color: #ccc;
-                background: #222238;
-            }
-
-            .tab-btn.active {
-                color: #00d4aa;
-                border-bottom-color: #00d4aa;
-            }
-
-        .tab-content {
-            display: none;
-            padding: 20px;
-            max-width: 900px;
-            margin: 0 auto;
-        }
-
-            .tab-content.active {
-                display: block;
-            }
-
-        /* ---- Cards ---- */
-        .card {
-            background: #1a1a2e;
-            border: 1px solid #2a2a3e;
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 16px;
-        }
-
-            .card h2 {
-                font-size: 16px;
-                color: #00d4aa;
-                margin-bottom: 12px;
-                padding-bottom: 8px;
-                border-bottom: 1px solid #2a2a3e;
-            }
-
-            .card h3 {
-                font-size: 14px;
-                color: #aaa;
-                margin-bottom: 8px;
-            }
-
-        /* ---- Form Elements ---- */
-        .form-group {
-            margin-bottom: 12px;
-        }
-
-            .form-group label {
-                display: block;
-                font-size: 12px;
-                color: #888;
-                margin-bottom: 4px;
-            }
-
-            .form-group input,
-            .form-group select,
-            .form-group textarea {
-                width: 100%;
-                padding: 10px;
-                background: #2a2a3e;
-                border: 1px solid #444;
-                border-radius: 8px;
-                color: #fff;
-                font-size: 14px;
-                outline: none;
-                transition: border-color 0.2s;
-            }
-
-                .form-group input:focus,
-                .form-group select:focus,
-                .form-group textarea:focus {
-                    border-color: #00d4aa;
-                }
-
-            .form-group textarea {
-                height: 80px;
-                resize: vertical;
-                font-family: monospace;
-                font-size: 12px;
-            }
-
-        .form-row {
-            display: flex;
-            gap: 12px;
-        }
-
-            .form-row .form-group {
-                flex: 1;
-            }
-
-        /* ---- Buttons ---- */
-        button {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 8px;
-            font-size: 14px;
-            cursor: pointer;
-            transition: all 0.2s;
-            font-weight: 600;
-        }
-
-        .btn-primary {
-            background: #00d4aa;
-            color: #000;
-        }
-
-            .btn-primary:hover {
-                background: #00f0c0;
-            }
-
-        .btn-danger {
-            background: #e74c3c;
-            color: #fff;
-        }
-
-            .btn-danger:hover {
-                background: #ff6b5a;
-            }
-
-        .btn-warning {
-            background: #f39c12;
-            color: #000;
-        }
-
-            .btn-warning:hover {
-                background: #ffb84d;
-            }
-
-        .btn-secondary {
-            background: #555;
-            color: #fff;
-        }
-
-            .btn-secondary:hover {
-                background: #777;
-            }
-
-        .btn-small {
-            padding: 6px 14px;
-            font-size: 12px;
-        }
-
-        .btn-group {
-            display: flex;
-            gap: 8px;
-            margin-top: 12px;
-            flex-wrap: wrap;
-        }
-
-        /* ---- Status Badge ---- */
-        .badge {
-            display: inline-block;
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-        }
-
-        .badge-success {
-            background: #00d4aa22;
-            color: #00d4aa;
-            border: 1px solid #00d4aa;
-        }
-
-        .badge-danger {
-            background: #e74c3c22;
-            color: #e74c3c;
-            border: 1px solid #e74c3c;
-        }
-
-        .badge-warning {
-            background: #f39c1222;
-            color: #f39c12;
-            border: 1px solid #f39c12;
-        }
-
-        .badge-info {
-            background: #3498db22;
-            color: #3498db;
-            border: 1px solid #3498db;
-        }
-
-        /* ---- Info Box ---- */
-        .info-box {
-            background: #2a2a3e;
-            border-radius: 8px;
-            padding: 12px;
-            margin: 8px 0;
-            font-size: 13px;
-        }
-
-            .info-box .info-row {
-                display: flex;
-                justify-content: space-between;
-                padding: 4px 0;
-                border-bottom: 1px solid #333;
-            }
-
-                .info-box .info-row:last-child {
-                    border-bottom: none;
-                }
-
-            .info-box .info-label {
-                color: #888;
-            }
-
-            .info-box .info-value {
-                color: #fff;
-                font-weight: 600;
-                font-family: monospace;
-                word-break: break-all;
-            }
-
-        .info-value.copyable {
-            cursor: pointer;
-            color: #00d4aa;
-        }
-
-            .info-value.copyable:hover {
-                text-decoration: underline;
-            }
-
-        /* ---- Response Box ---- */
-        .response-box {
-            background: #0d0d1a;
-            border: 1px solid #333;
-            border-radius: 8px;
-            padding: 12px;
-            margin-top: 12px;
-            font-family: monospace;
-            font-size: 12px;
-            white-space: pre-wrap;
-            word-break: break-all;
-            max-height: 300px;
-            overflow-y: auto;
-            color: #aaa;
-        }
-
-            .response-box.success {
-                border-color: #00d4aa;
-            }
-
-            .response-box.error {
-                border-color: #e74c3c;
-            }
-
-        /* ---- Table ---- */
-        .data-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 12px;
-            font-size: 13px;
-        }
-
-            .data-table th {
-                background: #2a2a3e;
-                padding: 10px;
-                text-align: right;
-                color: #888;
-                border-bottom: 1px solid #444;
-            }
-
-            .data-table td {
-                padding: 10px;
-                border-bottom: 1px solid #2a2a3e;
-            }
-
-            .data-table tr:hover {
-                background: #1e1e32;
-            }
-
-        /* ---- Divider ---- */
-        .divider {
-            border: none;
-            border-top: 1px solid #2a2a3e;
-            margin: 16px 0;
-        }
-
-        /* ---- Toast ---- */
-        .toast {
+        /* ---- Splash / Loading ---- */
+        .splash-screen {
             position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            padding: 12px 24px;
-            border-radius: 8px;
-            font-size: 14px;
-            z-index: 1000;
-            display: none;
-            animation: fadeIn 0.3s;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--bg-primary);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.5s;
         }
 
-            .toast.show {
-                display: block;
-            }
-
-            .toast.success {
-                background: #00d4aa;
-                color: #000;
-            }
-
-            .toast.error {
-                background: #e74c3c;
-                color: #fff;
-            }
-
-        @keyframes fadeIn {
-            from {
+            .splash-screen.hidden {
                 opacity: 0;
-                transform: translateX(-50%) translateY(10px);
+                pointer-events: none;
             }
 
-            to {
-                opacity: 1;
-                transform: translateX(-50%) translateY(0);
+        .splash-logo {
+            width: 80px;
+            height: 80px;
+            background: var(--accent);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            margin-bottom: 20px;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
             }
         }
 
-        /* ---- Loading ---- */
-        .loading {
-            display: inline-block;
-            width: 16px;
-            height: 16px;
-            border: 2px solid #333;
-            border-top-color: #00d4aa;
+        .splash-text {
+            color: var(--text-secondary);
+            font-size: 14px;
+            margin-top: 12px;
+        }
+
+        .spinner {
+            width: 32px;
+            height: 32px;
+            border: 3px solid var(--border);
+            border-top-color: var(--accent);
             border-radius: 50%;
             animation: spin 0.8s linear infinite;
-            margin-right: 8px;
-            vertical-align: middle;
+            margin-top: 20px;
         }
 
         @keyframes spin {
@@ -416,922 +110,1436 @@
             }
         }
 
-        /* ---- Responsive ---- */
-        @media (max-width: 600px) {
-            .form-row {
-                flex-direction: column;
-            }
-
-            .top-bar {
-                flex-direction: column;
-                gap: 8px;
-            }
-
-                .top-bar input {
-                    width: 100%;
-                }
+        /* ---- App Container ---- */
+        .app-container {
+            display: none;
+            max-width: 480px;
+            margin: 0 auto;
+            padding: 0 0 100px 0;
+            min-height: 100vh;
         }
+
+            .app-container.visible {
+                display: block;
+            }
+
+        /* ---- Header ---- */
+        .app-header {
+            padding: 20px 20px 16px;
+            text-align: center;
+        }
+
+        .user-avatar {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent), #0078d4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            margin: 0 auto 12px;
+            border: 3px solid var(--border);
+        }
+
+        .user-name {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .user-id {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        /* ---- Status Badge ---- */
+        .status-bar {
+            margin: 0 20px;
+            padding: 12px 16px;
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+            .status-bar.active {
+                background: rgba(0, 212, 170, 0.1);
+                border: 1px solid rgba(0, 212, 170, 0.3);
+                color: var(--success);
+            }
+
+            .status-bar.inactive {
+                background: rgba(231, 76, 60, 0.1);
+                border: 1px solid rgba(231, 76, 60, 0.3);
+                color: var(--danger);
+            }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .status-bar.active .status-dot {
+            background: var(--success);
+        }
+
+        .status-bar.inactive .status-dot {
+            background: var(--danger);
+        }
+
+        /* ---- Cards ---- */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            margin: 16px 20px;
+            overflow: hidden;
+        }
+
+        .card-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+            .card-header h3 {
+                font-size: 15px;
+                font-weight: 600;
+            }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        /* ---- Balance Card ---- */
+        .balance-card {
+            background: linear-gradient(135deg, #1e3a5f, #1e2746);
+            border: 1px solid rgba(0, 212, 170, 0.2);
+        }
+
+        .balance-main {
+            text-align: center;
+            padding: 8px 0 16px;
+        }
+
+        .balance-label {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+
+        .balance-amount {
+            font-size: 32px;
+            font-weight: 800;
+            color: var(--accent);
+            font-family: 'SF Mono', monospace;
+        }
+
+            .balance-amount .currency {
+                font-size: 16px;
+                font-weight: 400;
+                color: var(--text-secondary);
+                margin-right: 4px;
+            }
+
+        .balance-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 1px;
+            background: var(--border);
+            border-top: 1px solid var(--border);
+        }
+
+        .balance-item {
+            background: var(--bg-card);
+            padding: 12px;
+            text-align: center;
+        }
+
+            .balance-item .bi-label {
+                font-size: 10px;
+                color: var(--text-muted);
+                margin-bottom: 4px;
+            }
+
+            .balance-item .bi-value {
+                font-size: 14px;
+                font-weight: 700;
+                font-family: 'SF Mono', monospace;
+            }
+
+        /* ---- Wallet Section ---- */
+        .wallet-section {
+            margin: 16px 20px;
+        }
+
+        .wallet-connected {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .wallet-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(0, 212, 170, 0.1);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .wallet-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+            .wallet-info .wi-label {
+                font-size: 12px;
+                color: var(--text-muted);
+            }
+
+            .wallet-info .wi-address {
+                font-size: 13px;
+                font-family: monospace;
+                color: var(--text-primary);
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+        .wallet-disconnect-btn {
+            background: rgba(231, 76, 60, 0.15);
+            border: none;
+            color: var(--danger);
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        /* ---- Buttons ---- */
+        .btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: #000;
+        }
+
+            .btn-primary:hover {
+                background: var(--accent-hover);
+            }
+
+            .btn-primary:disabled {
+                background: var(--bg-input);
+                color: var(--text-muted);
+                cursor: not-allowed;
+            }
+
+        .btn-outline {
+            background: transparent;
+            border: 1.5px solid var(--accent);
+            color: var(--accent);
+        }
+
+            .btn-outline:hover {
+                background: rgba(0, 212, 170, 0.1);
+            }
+
+        .btn-danger {
+            background: rgba(231, 76, 60, 0.15);
+            color: var(--danger);
+            border: 1px solid rgba(231, 76, 60, 0.3);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 12px;
+        }
+
+            .btn-group .btn {
+                flex: 1;
+            }
+
+        /* ---- Payment Info Box ---- */
+        .pay-info-box {
+            background: var(--bg-input);
+            border-radius: var(--radius-sm);
+            padding: 16px;
+            margin-top: 12px;
+        }
+
+        .pay-info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+            .pay-info-row:last-child {
+                border-bottom: none;
+            }
+
+            .pay-info-row .pir-label {
+                font-size: 12px;
+                color: var(--text-muted);
+            }
+
+            .pay-info-row .pir-value {
+                font-size: 13px;
+                font-family: monospace;
+                color: var(--text-primary);
+                max-width: 200px;
+                word-break: break-all;
+                text-align: left;
+                display: flex;
+                align-items: center;
+                gap: 6px;
+            }
+
+        .copy-btn {
+            background: rgba(0, 212, 170, 0.15);
+            border: none;
+            color: var(--accent);
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        /* ---- Withdraw Preview ---- */
+        .withdraw-preview {
+            background: var(--bg-input);
+            border-radius: var(--radius-sm);
+            padding: 16px;
+            margin: 12px 0;
+        }
+
+        .wp-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+            font-size: 14px;
+        }
+
+            .wp-row.total {
+                border-top: 1px solid var(--border);
+                margin-top: 8px;
+                padding-top: 12px;
+                font-weight: 700;
+                color: var(--accent);
+            }
+
+        /* ---- Input ---- */
+        .input-group {
+            margin-bottom: 16px;
+        }
+
+            .input-group label {
+                font-size: 12px;
+                color: var(--text-muted);
+                margin-bottom: 6px;
+                display: block;
+            }
+
+            .input-group input {
+                width: 100%;
+                padding: 12px 16px;
+                background: var(--bg-input);
+                border: 1.5px solid var(--border);
+                border-radius: var(--radius-sm);
+                color: var(--text-primary);
+                font-size: 16px;
+                outline: none;
+                transition: border-color 0.2s;
+            }
+
+                .input-group input:focus {
+                    border-color: var(--accent);
+                }
+
+        /* ---- Sections ---- */
+        .section-title {
+            padding: 20px 20px 8px;
+            font-size: 13px;
+            color: var(--text-muted);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* ---- Bottom Nav ---- */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-around;
+            padding: 8px 0;
+            z-index: 100;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            padding: 8px 16px;
+            cursor: pointer;
+            color: var(--text-muted);
+            font-size: 10px;
+            font-weight: 600;
+            transition: color 0.2s;
+            border: none;
+            background: none;
+        }
+
+            .nav-item.active {
+                color: var(--accent);
+            }
+
+            .nav-item .nav-icon {
+                font-size: 20px;
+            }
+
+        /* ---- Pages ---- */
+        .page {
+            display: none;
+        }
+
+            .page.active {
+                display: block;
+            }
+
+        /* ---- Modal ---- */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.7);
+            z-index: 200;
+            display: none;
+            align-items: flex-end;
+            justify-content: center;
+        }
+
+            .modal-overlay.show {
+                display: flex;
+            }
+
+        .modal-content {
+            background: var(--bg-card);
+            border-radius: var(--radius) var(--radius) 0 0;
+            width: 100%;
+            max-width: 480px;
+            padding: 24px 20px 40px;
+            animation: slideUp 0.3s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(100%);
+            }
+
+            to {
+                transform: translateY(0);
+            }
+        }
+
+        .modal-handle {
+            width: 40px;
+            height: 4px;
+            background: var(--text-muted);
+            border-radius: 2px;
+            margin: 0 auto 20px;
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+
+        /* ---- Toast ---- */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 300;
+        }
+
+        .toast {
+            padding: 12px 20px;
+            border-radius: var(--radius-sm);
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            animation: toastIn 0.3s ease-out;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            min-width: 250px;
+            justify-content: center;
+        }
+
+            .toast.success {
+                background: var(--success);
+                color: #000;
+            }
+
+            .toast.error {
+                background: var(--danger);
+                color: #fff;
+            }
+
+            .toast.info {
+                background: #3498db;
+                color: #fff;
+            }
+
+        @keyframes toastIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ---- Empty State ---- */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-muted);
+        }
+
+            .empty-state .es-icon {
+                font-size: 48px;
+                margin-bottom: 12px;
+            }
+
+            .empty-state .es-text {
+                font-size: 14px;
+            }
+
+        /* ---- Transaction History ---- */
+        .tx-item {
+            display: flex;
+            align-items: center;
+            padding: 14px 20px;
+            border-bottom: 1px solid var(--border);
+            gap: 12px;
+        }
+
+        .tx-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+            .tx-icon.deposit {
+                background: rgba(0, 212, 170, 0.15);
+            }
+
+            .tx-icon.withdraw {
+                background: rgba(231, 76, 60, 0.15);
+            }
+
+        .tx-info {
+            flex: 1;
+        }
+
+            .tx-info .tx-type {
+                font-size: 14px;
+                font-weight: 600;
+            }
+
+            .tx-info .tx-date {
+                font-size: 11px;
+                color: var(--text-muted);
+            }
+
+        .tx-amount {
+            font-family: monospace;
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+            .tx-amount.positive {
+                color: var(--success);
+            }
+
+            .tx-amount.negative {
+                color: var(--danger);
+            }
     </style>
 </head>
 <body>
 
-    <!-- ============ TOP BAR ============ -->
-    <div class="top-bar">
-        <h1>🔷 UMiniApp Test Panel</h1>
-        <div class="config-area">
-            <input type="text" id="baseUrl" placeholder="Base URL" value="https://localhost:7168/api">
-            <input type="text" id="jwtToken" placeholder="JWT Token (after login)..." readonly>
-            <button class="btn-secondary btn-small" onclick="copyToken()">📋 Copy</button>
+    <!-- ============ SPLASH SCREEN ============ -->
+    <div class="splash-screen" id="splashScreen">
+        <div class="splash-logo">🔷</div>
+        <div style="font-size:20px; font-weight:700;">UMiniApp</div>
+        <div class="splash-text" id="splashText">در حال اتصال...</div>
+        <div class="spinner"></div>
+    </div>
+
+    <!-- ============ APP CONTAINER ============ -->
+    <div class="app-container" id="appContainer">
+
+        <!-- ======== PAGE: HOME ======== -->
+        <div class="page active" id="page-home">
+
+            <!-- Header -->
+            <div class="app-header">
+                <div class="user-avatar" id="userAvatar">👤</div>
+                <div class="user-name" id="userName">کاربر</div>
+                <div class="user-id" id="userIdLabel">-</div>
+            </div>
+
+            <!-- Status -->
+            <div class="status-bar inactive" id="statusBar">
+                <div class="status-dot"></div>
+                <span id="statusText">غیرفعال</span>
+            </div>
+
+            <!-- Balance -->
+            <div class="card balance-card" id="balanceCard">
+                <div class="card-body">
+                    <div class="balance-main">
+                        <div class="balance-label">موجودی قابل برداشت</div>
+                        <div class="balance-amount">
+                            <span id="availableBalance">0.00</span>
+                            <span class="currency">USDT</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="balance-grid">
+                    <div class="balance-item">
+                        <div class="bi-label">موجودی</div>
+                        <div class="bi-value" id="internalBalance">0.00</div>
+                    </div>
+                    <div class="balance-item">
+                        <div class="bi-label">پاداش</div>
+                        <div class="bi-value" id="rewardBalance" style="color:var(--accent)">0.00</div>
+                    </div>
+                    <div class="balance-item">
+                        <div class="bi-label">قفل‌شده</div>
+                        <div class="bi-value" id="lockedBalance" style="color:var(--warning)">0.00</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons (when inactive) -->
+            <div id="activationSection" style="display:none;">
+                <div class="card">
+                    <div class="card-body">
+                        <p style="color:var(--text-secondary); font-size:14px; margin-bottom:16px; text-align:center;">
+                            برای فعال‌سازی اشتراک، حداقل <strong style="color:var(--accent);">10 USDT</strong> لازم است
+                        </p>
+                        <div class="btn-group">
+                            <button class="btn btn-primary" onclick="payWithWallet()">
+                                💳 پرداخت
+                            </button>
+                            <button class="btn btn-outline" onclick="showPaymentInfo()">
+                                📋 اطلاعات واریز
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions (when active) -->
+            <div id="activeActionsSection" style="display:none;">
+                <div style="margin:16px 20px;">
+                    <div class="btn-group">
+                        <button class="btn btn-primary" onclick="showPage('deposit')">
+                            📥 واریز
+                        </button>
+                        <button class="btn btn-outline" onclick="showPage('withdraw')">
+                            📤 برداشت
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ======== PAGE: DEPOSIT ======== -->
+        <div class="page" id="page-deposit">
+            <div class="section-title">💳 واریز</div>
+
+            <div class="card">
+                <div class="card-body">
+                    <p style="color:var(--text-secondary); font-size:14px; margin-bottom:16px;">
+                        برای واریز، از یکی از روش‌های زیر استفاده کنید:
+                    </p>
+
+                    <button class="btn btn-primary" onclick="payWithWallet()" style="margin-bottom:10px;">
+                        💳 پرداخت با کیف پول متصل
+                    </button>
+                    <button class="btn btn-outline" onclick="showPaymentInfo()">
+                        📋 نمایش اطلاعات واریز دستی
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ======== PAGE: WITHDRAW ======== -->
+        <div class="page" id="page-withdraw">
+            <div class="section-title">📤 برداشت</div>
+
+            <div class="card">
+                <div class="card-body">
+                    <div class="input-group">
+                        <label>مبلغ برداشت (USDT)</label>
+                        <input type="number" id="withdrawAmount" placeholder="10"
+                               value="10" min="10" step="0.01"
+                               oninput="updateWithdrawPreview()">
+                    </div>
+
+                    <div class="withdraw-preview">
+                        <div class="wp-row">
+                            <span style="color:var(--text-muted)">مبلغ درخواستی</span>
+                            <span id="wpRequested">10.00 USDT</span>
+                        </div>
+                        <div class="wp-row">
+                            <span style="color:var(--text-muted)">کارمزد</span>
+                            <span style="color:var(--warning)" id="wpFee">1.00 USDT</span>
+                        </div>
+                        <div class="wp-row total">
+                            <span>دریافتی شما</span>
+                            <span id="wpNet">9.00 USDT</span>
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom:12px;">
+                        <div class="pay-info-row" style="border:none; padding:4px 0;">
+                            <span class="pir-label">واریز به آدرس</span>
+                            <span class="pir-value" id="wpWalletAddress" style="font-size:11px;">-</span>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-primary" id="withdrawBtn" onclick="submitWithdraw()">
+                        📤 ثبت درخواست برداشت
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ======== PAGE: WALLET ======== -->
+        <div class="page" id="page-wallet">
+            <div class="section-title">👛 کیف پول</div>
+
+            <!-- Not Connected -->
+            <div id="walletNotConnected">
+                <div class="card">
+                    <div class="card-body" style="text-align:center;">
+                        <div style="font-size:48px; margin-bottom:12px;">👛</div>
+                        <p style="color:var(--text-secondary); margin-bottom:16px;">
+                            کیف پول خود را متصل کنید
+                        </p>
+                        <button class="btn btn-primary" onclick="connectWallet()">
+                            🔗 اتصال کیف پول
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Connected -->
+            <div id="walletConnected" style="display:none;">
+                <div class="wallet-connected">
+                    <div class="wallet-icon">👛</div>
+                    <div class="wallet-info">
+                        <div class="wi-label">کیف پول متصل</div>
+                        <div class="wi-address" id="walletAddressDisplay">-</div>
+                    </div>
+                    <button class="wallet-disconnect-btn" onclick="disconnectWallet()">
+                        قطع
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ======== PAGE: HISTORY ======== -->
+        <div class="page" id="page-history">
+            <div class="section-title">📜 تاریخچه</div>
+            <div class="card" style="padding:0;">
+                <div id="historyList">
+                    <div class="empty-state">
+                        <div class="es-icon">📭</div>
+                        <div class="es-text">تاریخچه‌ای وجود ندارد</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ============ BOTTOM NAV ============ -->
+    <div class="bottom-nav" id="bottomNav" style="display:none;">
+        <button class="nav-item active" onclick="showPage('home')">
+            <span class="nav-icon">🏠</span>
+            خانه
+        </button>
+        <button class="nav-item" onclick="showPage('deposit')">
+            <span class="nav-icon">📥</span>
+            واریز
+        </button>
+        <button class="nav-item" onclick="showPage('wallet')">
+            <span class="nav-icon">👛</span>
+            کیف پول
+        </button>
+        <button class="nav-item" onclick="showPage('withdraw')">
+            <span class="nav-icon">📤</span>
+            برداشت
+        </button>
+        <button class="nav-item" onclick="showPage('history')">
+            <span class="nav-icon">📜</span>
+            تاریخچه
+        </button>
+    </div>
+
+    <!-- ============ PAYMENT INFO MODAL ============ -->
+    <div class="modal-overlay" id="paymentModal">
+        <div class="modal-content">
+            <div class="modal-handle"></div>
+            <div class="modal-title">📋 اطلاعات واریز</div>
+
+            <p style="color:var(--text-secondary); font-size:13px; margin-bottom:16px; text-align:center;">
+                اطلاعات زیر را کپی کنید و از هر کیف پول یا صرافی واریز کنید
+            </p>
+
+            <div class="pay-info-box">
+                <div class="pay-info-row">
+                    <span class="pir-label">آدرس مقصد</span>
+                    <span class="pir-value">
+                        <span id="payDestWallet">-</span>
+                        <button class="copy-btn" onclick="copyField('payDestWallet')">کپی</button>
+                    </span>
+                </div>
+                <div class="pay-info-row">
+                    <span class="pir-label">Memo</span>
+                    <span class="pir-value">
+                        <span id="payMemo">-</span>
+                        <button class="copy-btn" onclick="copyField('payMemo')">کپی</button>
+                    </span>
+                </div>
+                <div class="pay-info-row">
+                    <span class="pir-label">مبلغ پیشنهادی</span>
+                    <span class="pir-value" id="payRecommended">10 USDT</span>
+                </div>
+            </div>
+
+            <p style="color:var(--warning); font-size:12px; margin-top:12px; text-align:center;">
+                ⚠️ حتماً Memo را وارد کنید، در غیر این صورت واریز شناسایی نمی‌شود
+            </p>
+
+            <button class="btn btn-outline" style="margin-top:16px;"
+                    onclick="closeModal('paymentModal')">
+                بستن
+            </button>
         </div>
     </div>
 
-    <!-- ============ TABS ============ -->
-    <div class="tab-container">
-        <button class="tab-btn active" onclick="showTab('auth')">🔐 احراز هویت</button>
-        <button class="tab-btn" onclick="showTab('wallet')">👛 کیف پول</button>
-        <button class="tab-btn" onclick="showTab('status')">📊 وضعیت</button>
-        <button class="tab-btn" onclick="showTab('payment')">💳 پرداخت</button>
-        <button class="tab-btn" onclick="showTab('webhook')">🔗 Webhook/Cron</button>
-        <button class="tab-btn" onclick="showTab('withdraw')">💰 برداشت</button>
-        <button class="tab-btn" onclick="showTab('admin')">⚙️ پنل ادمین</button>
-    </div>
-
-    <!-- ============ TAB 1: AUTH ============ -->
-    <div class="tab-content active" id="tab-auth">
-        <div class="card">
-            <h2>🔐 ۱. احراز هویت (Login)</h2>
-            <p style="color:#888; font-size:13px; margin-bottom:12px;">
-                POST /api/auth/telegram
-            </p>
-
-            <div class="form-group">
-                <label>Telegram initData</label>
-                <textarea id="auth-initData" placeholder="initData از تلگرام..."></textarea>
-            </div>
-
-            <div class="btn-group">
-                <button class="btn-primary" onclick="doLogin()">🚀 Login</button>
-                <button class="btn-secondary" onclick="doLoginMock()">🧪 Mock Login (Test)</button>
-            </div>
-
-            <div class="response-box" id="auth-response"></div>
-        </div>
-
-        <div class="card">
-            <h2>اطلاعات کاربر فعلی</h2>
-            <div class="info-box" id="auth-user-info">
-                <div class="info-row">
-                    <span class="info-label">وضعیت</span>
-                    <span class="info-value" id="auth-status">وارد نشده‌اید</span>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- ============ TAB 2: WALLET ============ -->
-    <div class="tab-content" id="tab-wallet">
-        <div class="card">
-            <h2>👛 ۲. اتصال کیف پول</h2>
-            <p style="color:#888; font-size:13px; margin-bottom:12px;">
-                POST /api/wallet/connect
-            </p>
-
-            <div class="form-group">
-                <label>آدرس کیف پول</label>
-                <input type="text" id="wallet-address" placeholder="EQ...">
-            </div>
-
-            <div class="btn-group">
-                <button class="btn-primary" onclick="connectWallet()">🔗 Connect Wallet</button>
-                <button class="btn-danger" onclick="disconnectWallet()">❌ Disconnect Wallet</button>
-            </div>
-
-            <div class="response-box" id="wallet-response"></div>
-        </div>
-
-        <div class="card">
-            <h2>وضعیت کیف پول</h2>
-            <div class="info-box" id="wallet-info">
-                <div class="info-row">
-                    <span class="info-label">آدرس ثبت‌شده</span>
-                    <span class="info-value" id="wallet-current">نامشخص</span>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- ============ TAB 3: STATUS ============ -->
-    <div class="tab-content" id="tab-status">
-        <div class="card">
-            <h2>📊 ۳. وضعیت کاربر</h2>
-            <p style="color:#888; font-size:13px; margin-bottom:12px;">
-                GET /api/me/status
-            </p>
-
-            <div class="btn-group">
-                <button class="btn-primary" onclick="getUserStatus()">🔄 دریافت وضعیت</button>
-            </div>
-
-            <div class="response-box" id="status-response"></div>
-        </div>
-
-        <div class="card">
-            <h2>داشبورد کاربر</h2>
-            <div class="info-box" id="status-dashboard">
-                <div class="info-row">
-                    <span class="info-label">وضعیت اشتراک</span>
-                    <span class="info-value" id="dash-active">-</span>
-                </div>
-                <div class="info-row">
-                    <span class="info-label">موجودی داخلی</span>
-                    <span class="info-value" id="dash-balance">-</span>
-                </div>
-                <div class="info-row">
-                    <span class="info-label">پاداش فعلی</span>
-                    <span class="info-value" id="dash-reward">-</span>
-                </div>
-                <div class="info-row">
-                    <span class="info-label">مبلغ قفل‌شده</span>
-                    <span class="info-value" id="dash-locked">-</span>
-                </div>
-                <div class="info-row">
-                    <span class="info-label">موجودی قابل برداشت</span>
-                    <span class="info-value" id="dash-available">-</span>
-                </div>
-                <div class="info-row">
-                    <span class="info-label">آدرس کیف پول</span>
-                    <span class="info-value" id="dash-wallet">-</span>
-                </div>
-                <div class="info-row">
-                    <span class="info-label">تاریخ فعال‌سازی</span>
-                    <span class="info-value" id="dash-activation">-</span>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- ============ TAB 4: PAYMENT ============ -->
-    <div class="tab-content" id="tab-payment">
-
-        <!-- Payment Info -->
-        <div class="card">
-            <h2>💳 ۴. اطلاعات پرداخت</h2>
-            <p style="color:#888; font-size:13px; margin-bottom:12px;">
-                GET /api/payment/info
-            </p>
-
-            <div class="btn-group">
-                <button class="btn-primary" onclick="getPaymentInfo()">📋 دریافت اطلاعات پرداخت</button>
-            </div>
-
-            <div class="info-box" id="payment-info-box" style="display:none;">
-                <div class="info-row">
-                    <span class="info-label">Destination Wallet</span>
-                    <span class="info-value copyable" id="pay-dest" onclick="copyText(this)">-</span>
-                </div>
-                <div class="info-row">
-                    <span class="info-label">Memo</span>
-                    <span class="info-value copyable" id="pay-memo" onclick="copyText(this)">-</span>
-                </div>
-                <div class="info-row">
-                    <span class="info-label">Recommended Amount</span>
-                    <span class="info-value" id="pay-amount">-</span>
-                </div>
-            </div>
-
-            <div class="response-box" id="payment-info-response"></div>
-        </div>
-
-        <!-- Payment Intent -->
-        <div class="card">
-            <h2>۵. ایجاد Payment Intent (پرداخت داخل اپ)</h2>
-            <p style="color:#888; font-size:13px; margin-bottom:12px;">
-                POST /api/payment/intent
-            </p>
-
-            <div class="form-row">
-                <div class="form-group">
-                    <label>مبلغ (Smallest Unit)</label>
-                    <input type="number" id="intent-amount" placeholder="10000000" value="10000000">
-                </div>
-                <div class="form-group">
-                    <label>آدرس کیف پول فرستنده</label>
-                    <input type="text" id="intent-wallet" placeholder="EQ...">
-                </div>
-            </div>
-
-            <div class="btn-group">
-                <button class="btn-primary" onclick="createPaymentIntent()">🔖 ایجاد Intent</button>
-            </div>
-
-            <div class="response-box" id="intent-response"></div>
-        </div>
-
-        <!-- Update Payment Status -->
-        <div class="card">
-            <h2>۶. تغییر وضعیت Payment</h2>
-            <p style="color:#888; font-size:13px; margin-bottom:12px;">
-                PUT /api/payment/{id}/status
-            </p>
-
-            <div class="form-row">
-                <div class="form-group">
-                    <label>Payment ID</label>
-                    <input type="number" id="update-payment-id" placeholder="1">
-                </div>
-                <div class="form-group">
-                    <label>وضعیت جدید</label>
-                    <select id="update-payment-status">
-                        <option value="WalletSubmitted">WalletSubmitted</option>
-                        <option value="Signed">Signed</option>
-                        <option value="WaitingConfirmation">WaitingConfirmation</option>
-                        <option value="Expired">Expired</option>
-                        <option value="Failed">Failed</option>
-                    </select>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label>TxHash (اختیاری)</label>
-                <input type="text" id="update-payment-txhash" placeholder="Optional...">
-            </div>
-
-            <div class="btn-group">
-                <button class="btn-warning" onclick="updatePaymentStatus()">📝 تغییر وضعیت</button>
-            </div>
-
-            <div class="response-box" id="update-payment-response"></div>
-        </div>
-    </div>
-
-    <!-- ============ TAB 5: WEBHOOK ============ -->
-    <div class="tab-content" id="tab-webhook">
-        <div class="card">
-            <h2>🔗 ۷. شبیه‌سازی Webhook / Cron</h2>
-            <p style="color:#888; font-size:13px; margin-bottom:12px;">
-                POST /api/webhook/transaction
-            </p>
-
-            <div class="form-row">
-                <div class="form-group">
-                    <label>TxHash</label>
-                    <input type="text" id="wh-txhash" placeholder="abc123...">
-                </div>
-                <div class="form-group">
-                    <label>Sender Wallet (اختیاری)</label>
-                    <input type="text" id="wh-sender" placeholder="EQ...">
-                </div>
-            </div>
-
-            <div class="form-row">
-                <div class="form-group">
-                    <label>Destination Wallet (Raw)</label>
-                    <input type="text" id="wh-dest" placeholder="0:abc...">
-                </div>
-                <div class="form-group">
-                    <label>Token Contract (Raw)</label>
-                    <input type="text" id="wh-token" placeholder="0:def...">
-                </div>
-            </div>
-
-            <div class="form-row">
-                <div class="form-group">
-                    <label>Amount (Smallest Unit)</label>
-                    <input type="number" id="wh-amount" placeholder="10000000" value="10000000">
-                </div>
-                <div class="form-group">
-                    <label>Memo</label>
-                    <input type="text" id="wh-memo" placeholder="Um1531257">
-                </div>
-            </div>
-
-            <div class="form-row">
-                <div class="form-group">
-                    <label>Is Successful</label>
-                    <select id="wh-success">
-                        <option value="true" selected>✅ Yes</option>
-                        <option value="false">❌ No</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Is Bounced</label>
-                    <select id="wh-bounced">
-                        <option value="false" selected>❌ No</option>
-                        <option value="true">✅ Yes</option>
-                    </select>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label>Raw Payload (اختیاری)</label>
-                <textarea id="wh-payload" placeholder='{"raw": "data"}'></textarea>
-            </div>
-
-            <div class="btn-group">
-                <button class="btn-primary" onclick="sendWebhook()">🚀 ارسال تراکنش</button>
-                <button class="btn-secondary" onclick="fillWebhookSample()">🧪 پر کردن نمونه</button>
-            </div>
-
-            <div class="response-box" id="webhook-response"></div>
-        </div>
-    </div>
-
-    <!-- ============ TAB 6: WITHDRAW ============ -->
-    <div class="tab-content" id="tab-withdraw">
-        <div class="card">
-            <h2>💰 ۱۰. ثبت درخواست برداشت</h2>
-            <p style="color:#888; font-size:13px; margin-bottom:12px;">
-                POST /api/withdraw
-            </p>
-
-            <div class="form-group">
-                <label>مبلغ درخواستی (Smallest Unit)</label>
-                <input type="number" id="wd-amount" placeholder="10000000" value="10000000">
-            </div>
-
-            <!-- Preview -->
-            <div class="info-box" id="wd-preview">
-                <div class="info-row">
-                    <span class="info-label">Requested Amount</span>
-                    <span class="info-value" id="wd-preview-req">10 USDT</span>
-                </div>
-                <div class="info-row">
-                    <span class="info-label">Fee</span>
-                    <span class="info-value" id="wd-preview-fee">1 USDT</span>
-                </div>
-                <div class="info-row">
-                    <span class="info-label">You Will Receive</span>
-                    <span class="info-value" id="wd-preview-net" style="color:#00d4aa;">9 USDT</span>
-                </div>
-            </div>
-
-            <div class="btn-group">
-                <button class="btn-primary" onclick="createWithdraw()">📤 ثبت برداشت</button>
-            </div>
-
-            <div class="response-box" id="withdraw-response"></div>
-        </div>
-    </div>
-
-    <!-- ============ TAB 7: ADMIN ============ -->
-    <div class="tab-content" id="tab-admin">
-
-        <!-- Admin JWT -->
-        <div class="card">
-            <h2>⚙️ تنظیمات ادمین</h2>
-
-            <div class="form-group">
-                <label>Admin JWT Token</label>
-                <input type="text" id="admin-jwt" placeholder="JWT Token ادمین را وارد کنید...">
-            </div>
-
-            <div class="btn-group">
-                <button class="btn-secondary" onclick="setAdminToken()">💾 ذخیره Token ادمین</button>
-            </div>
-        </div>
-
-        <!-- Pending Withdraws -->
-        <div class="card">
-            <h2>📋 لیست درخواست‌های برداشت</h2>
-            <p style="color:#888; font-size:13px; margin-bottom:12px;">
-                GET /api/admin/withdraw/pending
-            </p>
-
-            <div class="btn-group">
-                <button class="btn-primary" onclick="getPendingWithdraws()">🔄 بارگذاری</button>
-            </div>
-
-            <div id="admin-withdraws-table"></div>
-
-            <div class="response-box" id="admin-list-response"></div>
-        </div>
-
-        <!-- Process Withdraw -->
-        <div class="card">
-            <h2>▶️ شروع پردازش</h2>
-            <p style="color:#888; font-size:13px; margin-bottom:12px;">
-                PUT /api/admin/withdraw/{id}/process
-            </p>
-
-            <div class="form-group">
-                <label>Withdraw ID</label>
-                <input type="number" id="admin-process-id" placeholder="1">
-            </div>
-
-            <div class="btn-group">
-                <button class="btn-warning" onclick="startProcessing()">▶️ Start Processing</button>
-            </div>
-
-            <div class="response-box" id="admin-process-response"></div>
-        </div>
-
-        <!-- Complete Withdraw -->
-        <div class="card">
-            <h2>✅ تکمیل برداشت</h2>
-            <p style="color:#888; font-size:13px; margin-bottom:12px;">
-                PUT /api/admin/withdraw/{id}/complete
-            </p>
-
-            <div class="form-row">
-                <div class="form-group">
-                    <label>Withdraw ID</label>
-                    <input type="number" id="admin-complete-id" placeholder="1">
-                </div>
-                <div class="form-group">
-                    <label>TxHash</label>
-                    <input type="text" id="admin-complete-txhash" placeholder="abc123...">
-                </div>
-            </div>
-
-            <div class="btn-group">
-                <button class="btn-primary" onclick="completeWithdraw()">✅ Complete</button>
-            </div>
-
-            <div class="response-box" id="admin-complete-response"></div>
-        </div>
-
-        <!-- Fail Withdraw -->
-        <div class="card">
-            <h2>❌ رد کردن برداشت</h2>
-            <p style="color:#888; font-size:13px; margin-bottom:12px;">
-                PUT /api/admin/withdraw/{id}/fail
-            </p>
-
-            <div class="form-row">
-                <div class="form-group">
-                    <label>Withdraw ID</label>
-                    <input type="number" id="admin-fail-id" placeholder="1">
-                </div>
-                <div class="form-group">
-                    <label>دلیل رد</label>
-                    <input type="text" id="admin-fail-reason" placeholder="دلیل رد...">
-                </div>
-            </div>
-
-            <div class="btn-group">
-                <button class="btn-danger" onclick="failWithdraw()">❌ Fail</button>
-            </div>
-
-            <div class="response-box" id="admin-fail-response"></div>
-        </div>
-    </div>
-
-    <!-- ============ TOAST ============ -->
-    <div class="toast" id="toast"></div>
+    <!-- ============ TOAST CONTAINER ============ -->
+    <div class="toast-container" id="toastContainer"></div>
 
     <!-- ============ JAVASCRIPT ============ -->
     <script>
 
-    // ---- State ----
-    let currentJwt = '';
-    let adminJwt = '';
-    let currentUserId = null;
-
-    // ---- Helpers ----
-    function getBaseUrl() {
-        return document.getElementById('baseUrl').value.replace(/\/$/, '');
-    }
-
-    function showTab(name) {
-        document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById('tab-' + name).classList.add('active');
-        event.target.classList.add('active');
-    }
-
-    function showToast(message, type = 'success') {
-        const toast = document.getElementById('toast');
-        toast.textContent = message;
-        toast.className = 'toast show ' + type;
-        setTimeout(() => toast.classList.remove('show'), 3000);
-    }
-
-    function showResponse(elementId, data, isError = false) {
-        const el = document.getElementById(elementId);
-        el.textContent = JSON.stringify(data, null, 2);
-        el.className = 'response-box ' + (isError ? 'error' : 'success');
-    }
-
-    function copyToken() {
-        navigator.clipboard.writeText(currentJwt);
-        showToast('Token کپی شد!');
-    }
-
-    function copyText(el) {
-        navigator.clipboard.writeText(el.textContent);
-        showToast('کپی شد: ' + el.textContent);
-    }
-
-    function formatUsdt(smallest) {
-        return (smallest / 1000000).toFixed(2) + ' USDT';
-    }
-
-    async function apiCall(method, endpoint, body = null, useAdminToken = false) {
-        const url = getBaseUrl() + endpoint;
-        const token = useAdminToken ? adminJwt : currentJwt;
-
-        const options = {
-            method: method,
-            headers: {
-                'Content-Type': 'application/json'
-            }
+        // ==================================================
+        // CONFIG
+        // ==================================================
+        const CONFIG = {
+            API_BASE_URL: 'https://localhost:7168/api',
+            TON_CONNECT_MANIFEST: 'https://yourdomain.com/tonconnect-manifest.json',
+            WITHDRAW_FEE: 1000000, // 1 USDT in smallest unit
+            WITHDRAW_MIN: 10000000, // 10 USDT in smallest unit
         };
 
-        if (token) {
-            options.headers['Authorization'] = 'Bearer ' + token;
-        }
-
-        if (body) {
-            options.body = JSON.stringify(body);
-        }
-
-        try {
-            const response = await fetch(url, options);
-            const data = await response.json();
-            return { ok: response.ok, status: response.status, data: data };
-        } catch (error) {
-            return { ok: false, status: 0, data: { error: error.message } };
-        }
-    }
-
-    // ---- 1. AUTH ----
-    async function doLogin() {
-        const initData = document.getElementById('auth-initData').value;
-        if (!initData) {
-            showToast('initData را وارد کنید', 'error');
-            return;
-        }
-
-        const result = await apiCall('POST', '/auth/telegram', { initData: initData });
-
-        showResponse('auth-response', result.data, !result.ok);
-
-        if (result.ok) {
-            currentJwt = result.data.token;
-            currentUserId = result.data.userId;
-            document.getElementById('jwtToken').value = currentJwt;
-            document.getElementById('auth-status').textContent =
-                '✅ وارد شد | UserId: ' + result.data.userId;
-            showToast('ورود موفق!');
-        } else {
-            showToast('خطا در ورود', 'error');
-        }
-    }
-
-    async function doLoginMock() {
-        // For testing without real Telegram initData
-        // You need to create a test endpoint or manually set JWT
-        const mockJwt = prompt('JWT Token تستی را وارد کنید:');
-        if (mockJwt) {
-            currentJwt = mockJwt;
-            document.getElementById('jwtToken').value = currentJwt;
-            document.getElementById('auth-status').textContent = '✅ وارد شد (Mock)';
-            showToast('Mock Login موفق!');
-        }
-    }
-
-    // ---- 2. WALLET ----
-    async function connectWallet() {
-        const address = document.getElementById('wallet-address').value;
-        if (!address) {
-            showToast('آدرس کیف پول را وارد کنید', 'error');
-            return;
-        }
-
-        const result = await apiCall('POST', '/wallet/connect', {
-            walletAddress: address
-        });
-
-        showResponse('wallet-response', result.data, !result.ok);
-
-        if (result.ok) {
-            document.getElementById('wallet-current').textContent =
-                result.data.walletAddress || address;
-            showToast('کیف پول متصل شد!');
-        } else {
-            showToast('خطا در اتصال', 'error');
-        }
-    }
-
-    async function disconnectWallet() {
-        const result = await apiCall('POST', '/wallet/disconnect');
-
-        showResponse('wallet-response', result.data, !result.ok);
-
-        if (result.ok) {
-            document.getElementById('wallet-current').textContent = 'متصل نیست';
-            showToast('کیف پول قطع شد!');
-        } else {
-            showToast('خطا در قطع اتصال', 'error');
-        }
-    }
-
-    // ---- 3. STATUS ----
-    async function getUserStatus() {
-        const result = await apiCall('GET', '/me/status');
-
-        showResponse('status-response', result.data, !result.ok);
-
-        if (result.ok && result.data.resultCode === 0) {
-            const d = result.data;
-            document.getElementById('dash-active').innerHTML =
-                d.isActive
-                    ? '<span class="badge badge-success">فعال ✅</span>'
-                    : '<span class="badge badge-danger">غیرفعال ❌</span>';
-            document.getElementById('dash-balance').textContent = formatUsdt(d.internalBalance);
-            document.getElementById('dash-reward').textContent = formatUsdt(d.currentReward);
-            document.getElementById('dash-locked').textContent = formatUsdt(d.lockedAmount);
-            document.getElementById('dash-available').textContent = formatUsdt(d.availableBalance);
-            document.getElementById('dash-wallet').textContent = d.walletAddress || 'ندارد';
-            document.getElementById('dash-activation').textContent = d.activationDate || 'فعال نشده';
-            showToast('وضعیت دریافت شد!');
-        }
-    }
-
-    // ---- 4. PAYMENT INFO ----
-    async function getPaymentInfo() {
-        const result = await apiCall('GET', '/payment/info');
-
-        showResponse('payment-info-response', result.data, !result.ok);
-
-        if (result.ok && result.data.resultCode === 0) {
-            document.getElementById('payment-info-box').style.display = 'block';
-            document.getElementById('pay-dest').textContent = result.data.destinationWallet;
-            document.getElementById('pay-memo').textContent = result.data.memo;
-            document.getElementById('pay-amount').textContent = formatUsdt(result.data.recommendedAmount);
-            showToast('اطلاعات پرداخت دریافت شد!');
-        }
-    }
-
-    // ---- 5. PAYMENT INTENT ----
-    async function createPaymentIntent() {
-        const amount = parseInt(document.getElementById('intent-amount').value);
-        const wallet = document.getElementById('intent-wallet').value;
-
-        if (!amount || amount <= 0) {
-            showToast('مبلغ را وارد کنید', 'error');
-            return;
-        }
-        if (!wallet) {
-            showToast('آدرس کیف پول را وارد کنید', 'error');
-            return;
-        }
-
-        const result = await apiCall('POST', '/payment/intent', {
-            amount: amount,
-            walletAddress: wallet
-        });
-
-        showResponse('intent-response', result.data, !result.ok);
-
-        if (result.ok) {
-            document.getElementById('update-payment-id').value = result.data.paymentId;
-            showToast('Intent ساخته شد! PaymentId: ' + result.data.paymentId);
-        }
-    }
-
-    // ---- 6. UPDATE PAYMENT STATUS ----
-    async function updatePaymentStatus() {
-        const id = document.getElementById('update-payment-id').value;
-        const status = document.getElementById('update-payment-status').value;
-        const txHash = document.getElementById('update-payment-txhash').value || null;
-
-        if (!id) {
-            showToast('Payment ID را وارد کنید', 'error');
-            return;
-        }
-
-        const result = await apiCall('PUT', '/payment/' + id + '/status', {
-            newStatus: status,
-            txHash: txHash
-        });
-
-        showResponse('update-payment-response', result.data, !result.ok);
-
-        if (result.ok) {
-            showToast('وضعیت تغییر کرد: ' + status);
-        }
-    }
-
-    // ---- 7. WEBHOOK ----
-    function fillWebhookSample() {
-        document.getElementById('wh-txhash').value = 'tx_' + Date.now();
-        document.getElementById('wh-sender').value = '0:sender123';
-        document.getElementById('wh-dest').value = ''; // باید از AppSettings پر شود
-        document.getElementById('wh-token').value = ''; // باید از AppSettings پر شود
-        document.getElementById('wh-amount').value = '10000000';
-        document.getElementById('wh-memo').value = 'Um153' + (currentUserId || '1');
-        showToast('نمونه پر شد! آدرس‌های Raw را خودتان وارد کنید.');
-    }
-
-    async function sendWebhook() {
-        const payload = {
-            txHash: document.getElementById('wh-txhash').value,
-            senderWallet: document.getElementById('wh-sender').value || null,
-            destinationWallet: document.getElementById('wh-dest').value,
-            tokenContract: document.getElementById('wh-token').value,
-            amount: parseInt(document.getElementById('wh-amount').value),
-            memo: document.getElementById('wh-memo').value || null,
-            isSuccessful: document.getElementById('wh-success').value === 'true',
-            isBounced: document.getElementById('wh-bounced').value === 'true',
-            rawPayload: document.getElementById('wh-payload').value || null
+        // ==================================================
+        // STATE
+        // ==================================================
+        let state = {
+            jwt: null,
+            userId: null,
+            telegramUserId: null,
+            isActive: false,
+            internalBalance: 0,
+            currentReward: 0,
+            lockedAmount: 0,
+            availableBalance: 0,
+            walletAddress: null,
+            activationDate: null,
+            userName: 'کاربر',
+            firstName: '',
         };
 
-        if (!payload.txHash) {
-            showToast('TxHash را وارد کنید', 'error');
-            return;
-        }
+        let tonConnectUI = null;
 
-        const url = getBaseUrl() + '/webhook/transaction';
+        // ==================================================
+        // INIT
+        // ==================================================
+        async function init() {
+            updateSplash('در حال اتصال به تلگرام...');
 
-        try {
-            const response = await fetch(url, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
+            try {
+                // 1. Init Telegram WebApp
+                const tg = window.Telegram?.WebApp;
+                if (tg) {
+                    tg.ready();
+                    tg.expand();
+                    tg.headerColor = '#1a1a2e';
+                    tg.backgroundColor = '#1a1a2e';
 
-            const data = await response.json();
-            showResponse('webhook-response', data, !response.ok);
-
-            if (response.ok) {
-                showToast('تراکنش پردازش شد! Code: ' + data.resultCode);
-            }
-        } catch (error) {
-            showResponse('webhook-response', { error: error.message }, true);
-            showToast('خطا در ارسال', 'error');
-        }
-    }
-
-    // ---- 8. WITHDRAW ----
-    // Preview calculator
-    document.getElementById('wd-amount').addEventListener('input', function () {
-        const amount = parseInt(this.value) || 0;
-        const fee = 1000000;
-        const net = amount - fee;
-        document.getElementById('wd-preview-req').textContent = formatUsdt(amount);
-        document.getElementById('wd-preview-fee').textContent = formatUsdt(fee);
-        document.getElementById('wd-preview-net').textContent = formatUsdt(Math.max(0, net));
-    });
-
-    async function createWithdraw() {
-        const amount = parseInt(document.getElementById('wd-amount').value);
-
-        if (!amount || amount <= 0) {
-            showToast('مبلغ را وارد کنید', 'error');
-            return;
-        }
-
-        const result = await apiCall('POST', '/withdraw', {
-            requestedAmount: amount
-        });
-
-        showResponse('withdraw-response', result.data, !result.ok);
-
-        if (result.ok) {
-            showToast('درخواست برداشت ثبت شد! ID: ' + result.data.withdrawId);
-        } else {
-            showToast('خطا: ' + result.data.resultMessage, 'error');
-        }
-    }
-
-    // ---- 9. ADMIN ----
-    function setAdminToken() {
-        adminJwt = document.getElementById('admin-jwt').value;
-        if (adminJwt) {
-            showToast('Token ادمین ذخیره شد!');
-        } else {
-            showToast('Token خالی است', 'error');
-        }
-    }
-
-    async function getPendingWithdraws() {
-        const result = await apiCall('GET', '/admin/withdraw/pending', null, true);
-
-        showResponse('admin-list-response', result.data, !result.ok);
-
-        if (result.ok && Array.isArray(result.data)) {
-            let html = '<table class="data-table"><thead><tr>';
-            html += '<th>ID</th><th>User</th><th>Telegram</th>';
-            html += '<th>آدرس</th><th>مبلغ</th><th>کارمزد</th>';
-            html += '<th>خالص</th><th>وضعیت</th><th>تاریخ</th><th>عملیات</th>';
-            html += '</tr></thead><tbody>';
-
-            result.data.forEach(w => {
-                html += '<tr>';
-                html += '<td>' + w.withdrawId + '</td>';
-                html += '<td>' + w.userId + '</td>';
-                html += '<td>' + w.telegramUserId + '</td>';
-                html += '<td style="font-size:11px;word-break:break-all;">' + w.walletAddress + '</td>';
-                html += '<td>' + formatUsdt(w.requestedAmount) + '</td>';
-                html += '<td>' + formatUsdt(w.feeAmount) + '</td>';
-                html += '<td style="color:#00d4aa;">' + formatUsdt(w.netAmount) + '</td>';
-                html += '<td><span class="badge badge-' +
-                    (w.status === 'Pending' ? 'warning' : 'info') + '">' +
-                    w.status + '</span></td>';
-                html += '<td style="font-size:11px;">' +
-                    new Date(w.createdAt).toLocaleString('fa-IR') + '</td>';
-                html += '<td>';
-
-                if (w.status === 'Pending') {
-                    html += '<button class="btn-warning btn-small" onclick="quickProcess(' +
-                        w.withdrawId + ')">▶️</button> ';
+                    if (tg.initDataUnsafe?.user) {
+                        state.firstName = tg.initDataUnsafe.user.first_name || 'کاربر';
+                        state.userName = state.firstName;
+                    }
                 }
 
-                html += '<button class="btn-danger btn-small" onclick="quickFail(' +
-                    w.withdrawId + ')">❌</button>';
-                html += '</td>';
-                html += '</tr>';
+                // 2. Login
+                updateSplash('در حال احراز هویت...');
+                await login();
+
+                // 3. Init TonConnect
+                updateSplash('در حال راه‌اندازی کیف پول...');
+                await initTonConnect();
+
+                // 4. Get user status
+                updateSplash('در حال دریافت اطلاعات...');
+                await refreshStatus();
+
+                // 5. Show app
+                hideSplash();
+
+            } catch (error) {
+                console.error('Init error:', error);
+                updateSplash('خطا در اتصال: ' + error.message);
+            }
+        }
+
+        // ==================================================
+        // SPLASH
+        // ==================================================
+        function updateSplash(text) {
+            document.getElementById('splashText').textContent = text;
+        }
+
+        function hideSplash() {
+            document.getElementById('splashScreen').classList.add('hidden');
+            document.getElementById('appContainer').classList.add('visible');
+            document.getElementById('bottomNav').style.display = 'flex';
+        }
+
+        // ==================================================
+        // AUTH
+        // ==================================================
+        async function login() {
+            const tg = window.Telegram?.WebApp;
+            const initData = tg?.initData;
+
+            if (!initData) {
+                // Development mode - prompt for JWT
+                const mockJwt = prompt('JWT Token تستی وارد کنید (حالت توسعه):');
+                if (mockJwt) {
+                    state.jwt = mockJwt;
+                    state.userName = 'Test User';
+                    return;
+                }
+                throw new Error('initData تلگرام یافت نشد');
+            }
+
+            const result = await apiCall('POST', '/auth/telegram', {
+                initData: initData
+            }, false);
+
+            if (!result.ok) {
+                throw new Error(result.data?.message || 'خطا در احراز هویت');
+            }
+
+            state.jwt = result.data.token;
+            state.userId = result.data.userId;
+            state.telegramUserId = result.data.telegramUserId;
+        }
+
+        // ==================================================
+        // TON CONNECT
+        // ==================================================
+        async function initTonConnect() {
+            try {
+                tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
+                    manifestUrl: CONFIG.TON_CONNECT_MANIFEST,
+                    buttonRootId: null,
+                });
+
+                // Listen for wallet changes
+                tonConnectUI.onStatusChange(async (wallet) => {
+                    if (wallet) {
+                        const address = wallet.account.address;
+                        state.walletAddress = address;
+                        await saveWalletToServer(address);
+                        updateWalletUI();
+                    } else {
+                        if (state.walletAddress) {
+                            await removeWalletFromServer();
+                        }
+                        state.walletAddress = null;
+                        updateWalletUI();
+                    }
+                });
+
+                // Check if already connected
+                if (tonConnectUI.connected) {
+                    state.walletAddress = tonConnectUI.account?.address || null;
+                }
+            } catch (e) {
+                console.warn('TonConnect init warning:', e);
+            }
+        }
+
+        async function connectWallet() {
+            if (!tonConnectUI) {
+                showToast('TonConnect آماده نیست', 'error');
+                return;
+            }
+
+            try {
+                await tonConnectUI.openModal();
+            } catch (e) {
+                showToast('خطا در اتصال کیف پول', 'error');
+            }
+        }
+
+        async function disconnectWallet() {
+            if (!tonConnectUI) return;
+
+            try {
+                await tonConnectUI.disconnect();
+                state.walletAddress = null;
+                updateWalletUI();
+                showToast('کیف پول قطع شد');
+            } catch (e) {
+                showToast('خطا در قطع اتصال', 'error');
+            }
+        }
+
+        async function saveWalletToServer(address) {
+            const result = await apiCall('POST', '/wallet/connect', {
+                walletAddress: address
             });
 
-            html += '</tbody></table>';
-            document.getElementById('admin-withdraws-table').innerHTML = html;
-            showToast(result.data.length + ' درخواست یافت شد');
-        }
-    }
-
-    function quickProcess(id) {
-        document.getElementById('admin-process-id').value = id;
-        startProcessing();
-    }
-
-    function quickFail(id) {
-        const reason = prompt('دلیل رد را وارد کنید:');
-        if (reason) {
-            document.getElementById('admin-fail-id').value = id;
-            document.getElementById('admin-fail-reason').value = reason;
-            failWithdraw();
-        }
-    }
-
-    async function startProcessing() {
-        const id = document.getElementById('admin-process-id').value;
-        if (!id) {
-            showToast('Withdraw ID را وارد کنید', 'error');
-            return;
+            if (result.ok) {
+                showToast('کیف پول متصل شد ✅');
+            }
         }
 
-        const result = await apiCall('PUT', '/admin/withdraw/' + id + '/process',
-            null, true);
-
-        showResponse('admin-process-response', result.data, !result.ok);
-
-        if (result.ok) {
-            document.getElementById('admin-complete-id').value = id;
-            showToast('پردازش شروع شد! حالا تراکنش ارسال کنید.');
-            getPendingWithdraws();
-        }
-    }
-
-    async function completeWithdraw() {
-        const id = document.getElementById('admin-complete-id').value;
-        const txHash = document.getElementById('admin-complete-txhash').value;
-
-        if (!id) {
-            showToast('Withdraw ID را وارد کنید', 'error');
-            return;
-        }
-        if (!txHash) {
-            showToast('TxHash را وارد کنید', 'error');
-            return;
+        async function removeWalletFromServer() {
+            const result = await apiCall('POST', '/wallet/disconnect');
+            if (result.ok) {
+                showToast('کیف پول قطع شد');
+            }
         }
 
-        const result = await apiCall('PUT', '/admin/withdraw/' + id + '/complete', {
-            txHash: txHash
-        }, true);
+        // ==================================================
+        // STATUS
+        // ==================================================
+        async function refreshStatus() {
+            const result = await apiCall('GET', '/me/status');
 
-        showResponse('admin-complete-response', result.data, !result.ok);
+            if (result.ok && result.data.resultCode === 0) {
+                const d = result.data;
+                state.isActive = d.isActive;
+                state.internalBalance = d.internalBalance;
+                state.currentReward = d.currentReward;
+                state.lockedAmount = d.lockedAmount;
+                state.availableBalance = d.availableBalance;
+                state.walletAddress = d.walletAddress || state.walletAddress;
+                state.activationDate = d.activationDate;
+                state.userId = d.userId;
 
-        if (result.ok) {
-            showToast('برداشت تکمیل شد! ✅');
-            getPendingWithdraws();
-        }
-    }
-
-    async function failWithdraw() {
-        const id = document.getElementById('admin-fail-id').value;
-        const reason = document.getElementById('admin-fail-reason').value;
-
-        if (!id) {
-            showToast('Withdraw ID را وارد کنید', 'error');
-            return;
-        }
-        if (!reason) {
-            showToast('دلیل رد را وارد کنید', 'error');
-            return;
+                updateUI();
+            }
         }
 
-        const result = await apiCall('PUT', '/admin/withdraw/' + id + '/fail', {
-            failReason: reason
-        }, true);
+        // ==================================================
+        // PAYMENT
+        // ==================================================
+        async function showPaymentInfo() {
+            const result = await apiCall('GET', '/payment/info');
 
-        showResponse('admin-fail-response', result.data, !result.ok);
+            if (result.ok && result.data.resultCode === 0) {
+                document.getElementById('payDestWallet').textContent =
+                    result.data.destinationWallet;
+                document.getElementById('payMemo').textContent =
+                    result.data.memo;
+                document.getElementById('payRecommended').textContent =
+                    formatUsdt(result.data.recommendedAmount);
 
-        if (result.ok) {
-            showToast('برداشت رد شد! ❌');
-            getPendingWithdraws();
+                openModal('paymentModal');
+            } else {
+                showToast('خطا در دریافت اطلاعات', 'error');
+            }
         }
-    }
+
+        async function payWithWallet() {
+            if (!tonConnectUI || !tonConnectUI.connected) {
+                showToast('ابتدا کیف پول را متصل کنید', 'error');
+                showPage('wallet');
+                return;
+            }
+
+            // Get payment info
+            const infoResult = await apiCall('GET', '/payment/info');
+            if (!infoResult.ok) {
+                showToast('خطا در دریافت اطلاعات پرداخت', 'error');
+                return;
+            }
+
+            const payInfo = infoResult.data;
+
+            // Create payment intent
+            const intentResult = await apiCall('POST', '/payment/intent', {
+                amount: payInfo.recommendedAmount,
+                walletAddress: state.walletAddress
+            });
+
+            if (!intentResult.ok) {
+                showToast('خطا در ایجاد درخواست پرداخت', 'error');
+                return;
+            }
+
+            const paymentId = intentResult.data.paymentId;
+
+            // Update status to WalletSubmitted
+            await apiCall('PUT', '/payment/' + paymentId + '/status', {
+                newStatus: 'WalletSubmitted'
+            });
+
+            try {
+                // Send transaction via TonConnect
+                const transaction = {
+                    validUntil: Math.floor(Date.now() / 1000) + 600, // 10 min
+                    messages: [
+                        {
+                            address: payInfo.destinationWallet,
+                            amount: '0', // For Jetton transfers, TON amount is 0.05 for gas
+                            // Note: For actual USDT Jetton transfer, you need to construct
+                            // the Jetton transfer payload. This is a simplified version.
+                            payload: payInfo.memo
+                        }
+                    ]
+                };
+
+                showToast('لطفاً تراکنش را در کیف پول تأیید کنید...', 'info');
+
+                const result = await tonConnectUI.sendTransaction(transaction);
+
+                // Update status to Signed
+                await apiCall('PUT', '/payment/' + paymentId + '/status', {
+                    newStatus: 'Signed'
+                });
+
+                // Update to WaitingConfirmation
+                await apiCall('PUT', '/payment/' + paymentId + '/status', {
+                    newStatus: 'WaitingConfirmation',
+                    txHash: result.boc || null
+                });
+
+                showToast('تراکنش ارسال شد! منتظر تأیید شبکه...', 'success');
+
+                // Refresh after delay
+                setTimeout(refreshStatus, 15000);
+
+            } catch (e) {
+                console.error('Transaction error:', e);
+
+                await apiCall('PUT', '/payment/' + paymentId + '/status', {
+                    newStatus: 'Failed'
+                });
+
+                showToast('تراکنش لغو یا ناموفق شد', 'error');
+            }
+        }
+
+        // ==================================================
+        // WITHDRAW
+        // ==================================================
+        function updateWithdrawPreview() {
+            const amountUsdt = parseFloat(
+                document.getElementById('withdrawAmount').value) || 0;
+            const amount = Math.round(amountUsdt * 1000000);
+            const fee = CONFIG.WITHDRAW_FEE;
+            const net = Math.max(0, amount - fee);
+
+            document.getElementById('wpRequested').textContent =
+                formatUsdt(amount);
+            document.getElementById('wpFee').textContent =
+                formatUsdt(fee);
+            document.getElementById('wpNet').textContent =
+                formatUsdt(net);
+        }
+
+        async function submitWithdraw() {
+            const amountUsdt = parseFloat(
+                document.getElementById('withdrawAmount').value) || 0;
+            const amount = Math.round(amountUsdt * 1000000);
+
+            if (amount < CONFIG.WITHDRAW_MIN) {
+                showToast('حداقل برداشت ' +
+                    formatUsdt(CONFIG.WITHDRAW_MIN) + ' است', 'error');
+                return;
+            }
+
+            if (amount > state.availableBalance) {
+                showToast('موجودی کافی نیست', 'error');
+                return;
+            }
+
+            if (!state.walletAddress) {
+                showToast('ابتدا کیف پول را متصل کنید', 'error');
+                showPage('wallet');
+                return;
+            }
+
+            const result = await apiCall('POST', '/withdraw', {
+                requestedAmount: amount
+            });
+
+            if (result.ok && result.data.resultCode === 0) {
+                showToast('درخواست برداشت ثبت شد ✅');
+                await refreshStatus();
+                showPage('home');
+            } else {
+                showToast(result.data?.resultMessage || 'خطا در ثبت برداشت', 'error');
+            }
+        }
+
+        // ==================================================
+        // API HELPER
+        // ==================================================
+        async function apiCall(method, endpoint, body = null, auth = true) {
+            const url = CONFIG.API_BASE_URL + endpoint;
+
+            const headers = { 'Content-Type': 'application/json' };
+
+            if (auth && state.jwt) {
+                headers['Authorization'] = 'Bearer ' + state.jwt;
+            }
+
+            const options = { method, headers };
+
+            if (body) {
+                options.body = JSON.stringify(body);
+            }
+
+            try {
+                const response = await fetch(url, options);
+                const data = await response.json();
+                return { ok: response.ok, status: response.status, data };
+            } catch (error) {
+                console.error('API Error:', error);
+                return {
+                    ok: false,
+                    status: 0,
+                    data: { message: error.message }
+                };
+            }
+        }
+
+        // ==================================================
+        // UI UPDATES
+        // ==================================================
+        function updateUI() {
+            // User info
+            document.getElementById('userName').textContent = state.userName;
+            document.getElementById('userIdLabel').textContent =
+                'ID: ' + (state.userId || '-');
+            document.getElementById('userAvatar').textContent =
+                state.firstName ? state.firstName.charAt(0).toUpperCase() : '👤';
+
+            // Status
+            const statusBar = document.getElementById('statusBar');
+            const statusText = document.getElementById('statusText');
+
+            if (state.isActive) {
+                statusBar.className = 'status-bar active';
+                statusText.textContent = 'اشتراک فعال ✅';
+                document.getElementById('activationSection').style.display = 'none';
+                document.getElementById('activeActionsSection').style.display = 'block';
+            } else {
+                statusBar.className = 'status-bar inactive';
+                statusText.textContent = 'اشتراک غیرفعال';
+                document.getElementById('activationSection').style.display = 'block';
+                document.getElementById('activeActionsSection').style.display = 'none';
+            }
+
+            // Balances
+            document.getElementById('availableBalance').textContent =
+                formatUsdtNumber(state.availableBalance);
+            document.getElementById('internalBalance').textContent =
+                formatUsdtNumber(state.internalBalance);
+            document.getElementById('rewardBalance').textContent =
+                formatUsdtNumber(state.currentReward);
+            document.getElementById('lockedBalance').textContent =
+                formatUsdtNumber(state.lockedAmount);
+
+            // Wallet in withdraw page
+            document.getElementById('wpWalletAddress').textContent =
+                state.walletAddress
+                    ? shortenAddress(state.walletAddress)
+                    : 'کیف پول متصل نیست';
+
+            // Wallet UI
+            updateWalletUI();
+        }
+
+        function updateWalletUI() {
+            const connected = document.getElementById('walletConnected');
+            const notConnected = document.getElementById('walletNotConnected');
+
+            if (state.walletAddress) {
+                connected.style.display = 'block';
+                notConnected.style.display = 'none';
+                document.getElementById('walletAddressDisplay').textContent =
+                    shortenAddress(state.walletAddress);
+            } else {
+                connected.style.display = 'none';
+                notConnected.style.display = 'block';
+            }
+        }
+
+        // ==================================================
+        // NAVIGATION
+        // ==================================================
+        function showPage(name) {
+            // Hide all pages
+            document.querySelectorAll('.page').forEach(p =>
+                p.classList.remove('active'));
+
+            // Show target page
+            document.getElementById('page-' + name).classList.add('active');
+
+            // Update nav
+            document.querySelectorAll('.nav-item').forEach(n =>
+                n.classList.remove('active'));
+            event?.target?.closest?.('.nav-item')?.classList.add('active');
+
+            // Refresh data on certain pages
+            if (name === 'home') refreshStatus();
+            if (name === 'withdraw') updateWithdrawPreview();
+        }
+
+        // ==================================================
+        // MODAL
+        // ==================================================
+        function openModal(id) {
+            document.getElementById(id).classList.add('show');
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('show');
+        }
+
+        // Close modal on overlay click
+        document.querySelectorAll('.modal-overlay').forEach(m => {
+            m.addEventListener('click', (e) => {
+                if (e.target === m) m.classList.remove('show');
+            });
+        });
+
+        // ==================================================
+        // TOAST
+        // ==================================================
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = 'toast ' + type;
+            toast.textContent = message;
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateY(-10px)';
+                toast.style.transition = 'all 0.3s';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // ==================================================
+        // HELPERS
+        // ==================================================
+        function formatUsdt(smallest) {
+            return (smallest / 1000000).toFixed(2) + ' USDT';
+        }
+
+        function formatUsdtNumber(smallest) {
+            return (smallest / 1000000).toFixed(2);
+        }
+
+        function shortenAddress(addr) {
+            if (!addr) return '-';
+            if (addr.length <= 12) return addr;
+            return addr.substring(0, 6) + '...' + addr.substring(addr.length - 4);
+        }
+
+        function copyField(elementId) {
+            const text = document.getElementById(elementId).textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                showToast('کپی شد ✅');
+            });
+        }
+
+        // ==================================================
+        // START
+        // ==================================================
+        window.addEventListener('load', init);
 
     </script>
 
