@@ -1,169 +1,1339 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fa" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Premium Membership</title>
-
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <script src="https://unpkg.com/@tonconnect/ui@2.0.0/dist/tonconnect-ui.min.js"></script>
-
+    <title>UMiniApp - Test Panel</title>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            background: #0f172a;
-            color: white;
-            text-align: center;
-            padding: 30px;
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            background: #0f0f1a;
+            color: #e0e0e0;
+            min-height: 100vh;
         }
 
-        .card {
-            max-width: 450px;
-            margin: auto;
-            background: #1e293b;
-            padding: 30px;
-            border-radius: 20px;
+        /* ---- Top Bar ---- */
+        .top-bar {
+            background: #1a1a2e;
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #333;
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
 
-        h1 {
-            margin-bottom: 10px;
+            .top-bar h1 {
+                font-size: 18px;
+                color: #00d4aa;
+            }
+
+            .top-bar .config-area {
+                display: flex;
+                gap: 8px;
+                align-items: center;
+            }
+
+            .top-bar input {
+                background: #2a2a3e;
+                border: 1px solid #444;
+                color: #fff;
+                padding: 6px 10px;
+                border-radius: 6px;
+                font-size: 12px;
+                width: 280px;
+            }
+
+            .top-bar button {
+                padding: 6px 14px;
+                font-size: 12px;
+            }
+
+        /* ---- Tabs ---- */
+        .tab-container {
+            display: flex;
+            background: #1a1a2e;
+            border-bottom: 1px solid #333;
+            overflow-x: auto;
         }
 
-        .price {
-            font-size: 26px;
-            color: #38bdf8;
-            margin-bottom: 30px;
-        }
-
-        button {
-            width: 100%;
-            height: 50px;
+        .tab-btn {
+            padding: 12px 20px;
+            background: none;
             border: none;
-            border-radius: 12px;
-            font-size: 18px;
+            color: #888;
             cursor: pointer;
-            margin-top: 15px;
+            font-size: 14px;
+            border-bottom: 3px solid transparent;
+            white-space: nowrap;
+            transition: all 0.2s;
         }
 
-        #payBtn {
-            background: #10b981;
-            color: white;
+            .tab-btn:hover {
+                color: #ccc;
+                background: #222238;
+            }
+
+            .tab-btn.active {
+                color: #00d4aa;
+                border-bottom-color: #00d4aa;
+            }
+
+        .tab-content {
+            display: none;
+            padding: 20px;
+            max-width: 900px;
+            margin: 0 auto;
         }
 
-        #payBtn:disabled {
-            background: #475569;
-            cursor: not-allowed;
+            .tab-content.active {
+                display: block;
+            }
+
+        /* ---- Cards ---- */
+        .card {
+            background: #1a1a2e;
+            border: 1px solid #2a2a3e;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 16px;
         }
 
-        #status {
-            margin-top: 20px;
-            color: #cbd5e1;
+            .card h2 {
+                font-size: 16px;
+                color: #00d4aa;
+                margin-bottom: 12px;
+                padding-bottom: 8px;
+                border-bottom: 1px solid #2a2a3e;
+            }
+
+            .card h3 {
+                font-size: 14px;
+                color: #aaa;
+                margin-bottom: 8px;
+            }
+
+        /* ---- Form Elements ---- */
+        .form-group {
+            margin-bottom: 12px;
+        }
+
+            .form-group label {
+                display: block;
+                font-size: 12px;
+                color: #888;
+                margin-bottom: 4px;
+            }
+
+            .form-group input,
+            .form-group select,
+            .form-group textarea {
+                width: 100%;
+                padding: 10px;
+                background: #2a2a3e;
+                border: 1px solid #444;
+                border-radius: 8px;
+                color: #fff;
+                font-size: 14px;
+                outline: none;
+                transition: border-color 0.2s;
+            }
+
+                .form-group input:focus,
+                .form-group select:focus,
+                .form-group textarea:focus {
+                    border-color: #00d4aa;
+                }
+
+            .form-group textarea {
+                height: 80px;
+                resize: vertical;
+                font-family: monospace;
+                font-size: 12px;
+            }
+
+        .form-row {
+            display: flex;
+            gap: 12px;
+        }
+
+            .form-row .form-group {
+                flex: 1;
+            }
+
+        /* ---- Buttons ---- */
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 600;
+        }
+
+        .btn-primary {
+            background: #00d4aa;
+            color: #000;
+        }
+
+            .btn-primary:hover {
+                background: #00f0c0;
+            }
+
+        .btn-danger {
+            background: #e74c3c;
+            color: #fff;
+        }
+
+            .btn-danger:hover {
+                background: #ff6b5a;
+            }
+
+        .btn-warning {
+            background: #f39c12;
+            color: #000;
+        }
+
+            .btn-warning:hover {
+                background: #ffb84d;
+            }
+
+        .btn-secondary {
+            background: #555;
+            color: #fff;
+        }
+
+            .btn-secondary:hover {
+                background: #777;
+            }
+
+        .btn-small {
+            padding: 6px 14px;
+            font-size: 12px;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+            flex-wrap: wrap;
+        }
+
+        /* ---- Status Badge ---- */
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .badge-success {
+            background: #00d4aa22;
+            color: #00d4aa;
+            border: 1px solid #00d4aa;
+        }
+
+        .badge-danger {
+            background: #e74c3c22;
+            color: #e74c3c;
+            border: 1px solid #e74c3c;
+        }
+
+        .badge-warning {
+            background: #f39c1222;
+            color: #f39c12;
+            border: 1px solid #f39c12;
+        }
+
+        .badge-info {
+            background: #3498db22;
+            color: #3498db;
+            border: 1px solid #3498db;
+        }
+
+        /* ---- Info Box ---- */
+        .info-box {
+            background: #2a2a3e;
+            border-radius: 8px;
+            padding: 12px;
+            margin: 8px 0;
+            font-size: 13px;
+        }
+
+            .info-box .info-row {
+                display: flex;
+                justify-content: space-between;
+                padding: 4px 0;
+                border-bottom: 1px solid #333;
+            }
+
+                .info-box .info-row:last-child {
+                    border-bottom: none;
+                }
+
+            .info-box .info-label {
+                color: #888;
+            }
+
+            .info-box .info-value {
+                color: #fff;
+                font-weight: 600;
+                font-family: monospace;
+                word-break: break-all;
+            }
+
+        .info-value.copyable {
+            cursor: pointer;
+            color: #00d4aa;
+        }
+
+            .info-value.copyable:hover {
+                text-decoration: underline;
+            }
+
+        /* ---- Response Box ---- */
+        .response-box {
+            background: #0d0d1a;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 12px;
+            margin-top: 12px;
+            font-family: monospace;
+            font-size: 12px;
+            white-space: pre-wrap;
+            word-break: break-all;
+            max-height: 300px;
+            overflow-y: auto;
+            color: #aaa;
+        }
+
+            .response-box.success {
+                border-color: #00d4aa;
+            }
+
+            .response-box.error {
+                border-color: #e74c3c;
+            }
+
+        /* ---- Table ---- */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 12px;
+            font-size: 13px;
+        }
+
+            .data-table th {
+                background: #2a2a3e;
+                padding: 10px;
+                text-align: right;
+                color: #888;
+                border-bottom: 1px solid #444;
+            }
+
+            .data-table td {
+                padding: 10px;
+                border-bottom: 1px solid #2a2a3e;
+            }
+
+            .data-table tr:hover {
+                background: #1e1e32;
+            }
+
+        /* ---- Divider ---- */
+        .divider {
+            border: none;
+            border-top: 1px solid #2a2a3e;
+            margin: 16px 0;
+        }
+
+        /* ---- Toast ---- */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            z-index: 1000;
+            display: none;
+            animation: fadeIn 0.3s;
+        }
+
+            .toast.show {
+                display: block;
+            }
+
+            .toast.success {
+                background: #00d4aa;
+                color: #000;
+            }
+
+            .toast.error {
+                background: #e74c3c;
+                color: #fff;
+            }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateX(-50%) translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+
+        /* ---- Loading ---- */
+        .loading {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #333;
+            border-top-color: #00d4aa;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* ---- Responsive ---- */
+        @media (max-width: 600px) {
+            .form-row {
+                flex-direction: column;
+            }
+
+            .top-bar {
+                flex-direction: column;
+                gap: 8px;
+            }
+
+                .top-bar input {
+                    width: 100%;
+                }
         }
     </style>
 </head>
 <body>
 
-<div class="card">
-    <h1>Premium Membership</h1>
-
-    <div class="price">
-        Membership Price: 10 USDT
+    <!-- ============ TOP BAR ============ -->
+    <div class="top-bar">
+        <h1>🔷 UMiniApp Test Panel</h1>
+        <div class="config-area">
+            <input type="text" id="baseUrl" placeholder="Base URL" value="https://localhost:7168/api">
+            <input type="text" id="jwtToken" placeholder="JWT Token (after login)..." readonly>
+            <button class="btn-secondary btn-small" onclick="copyToken()">📋 Copy</button>
+        </div>
     </div>
 
-    <div id="ton-connect"></div>
+    <!-- ============ TABS ============ -->
+    <div class="tab-container">
+        <button class="tab-btn active" onclick="showTab('auth')">🔐 احراز هویت</button>
+        <button class="tab-btn" onclick="showTab('wallet')">👛 کیف پول</button>
+        <button class="tab-btn" onclick="showTab('status')">📊 وضعیت</button>
+        <button class="tab-btn" onclick="showTab('payment')">💳 پرداخت</button>
+        <button class="tab-btn" onclick="showTab('webhook')">🔗 Webhook/Cron</button>
+        <button class="tab-btn" onclick="showTab('withdraw')">💰 برداشت</button>
+        <button class="tab-btn" onclick="showTab('admin')">⚙️ پنل ادمین</button>
+    </div>
 
-    <button id="payBtn" disabled>
-        Pay 10 USDT
-    </button>
+    <!-- ============ TAB 1: AUTH ============ -->
+    <div class="tab-content active" id="tab-auth">
+        <div class="card">
+            <h2>🔐 ۱. احراز هویت (Login)</h2>
+            <p style="color:#888; font-size:13px; margin-bottom:12px;">
+                POST /api/auth/telegram
+            </p>
 
-    <div id="status"></div>
-</div>
+            <div class="form-group">
+                <label>Telegram initData</label>
+                <textarea id="auth-initData" placeholder="initData از تلگرام..."></textarea>
+            </div>
 
-<script>
-    Telegram.WebApp.ready();
-    Telegram.WebApp.expand();
+            <div class="btn-group">
+                <button class="btn-primary" onclick="doLogin()">🚀 Login</button>
+                <button class="btn-secondary" onclick="doLoginMock()">🧪 Mock Login (Test)</button>
+            </div>
 
-    const status = document.getElementById("status");
-    const payBtn = document.getElementById("payBtn");
+            <div class="response-box" id="auth-response"></div>
+        </div>
 
-    let walletAddress = null;
+        <div class="card">
+            <h2>اطلاعات کاربر فعلی</h2>
+            <div class="info-box" id="auth-user-info">
+                <div class="info-row">
+                    <span class="info-label">وضعیت</span>
+                    <span class="info-value" id="auth-status">وارد نشده‌اید</span>
+                </div>
+            </div>
+        </div>
+    </div>
 
-    const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
-        manifestUrl: "https://var1366.github.io/test256.github.io/tonconnect-manifest.json",
-        buttonRootId: "ton-connect"
-    });
+    <!-- ============ TAB 2: WALLET ============ -->
+    <div class="tab-content" id="tab-wallet">
+        <div class="card">
+            <h2>👛 ۲. اتصال کیف پول</h2>
+            <p style="color:#888; font-size:13px; margin-bottom:12px;">
+                POST /api/wallet/connect
+            </p>
 
+            <div class="form-group">
+                <label>آدرس کیف پول</label>
+                <input type="text" id="wallet-address" placeholder="EQ...">
+            </div>
 
-    tonConnectUI.onStatusChange(wallet => {
-        if (!wallet)
-            return;
+            <div class="btn-group">
+                <button class="btn-primary" onclick="connectWallet()">🔗 Connect Wallet</button>
+                <button class="btn-danger" onclick="disconnectWallet()">❌ Disconnect Wallet</button>
+            </div>
 
-        walletAddress = wallet.account.address;
+            <div class="response-box" id="wallet-response"></div>
+        </div>
 
-        payBtn.disabled = false;
+        <div class="card">
+            <h2>وضعیت کیف پول</h2>
+            <div class="info-box" id="wallet-info">
+                <div class="info-row">
+                    <span class="info-label">آدرس ثبت‌شده</span>
+                    <span class="info-value" id="wallet-current">نامشخص</span>
+                </div>
+            </div>
+        </div>
+    </div>
 
-        status.innerHTML = "Wallet Connected<br>" + walletAddress;
-    });
+    <!-- ============ TAB 3: STATUS ============ -->
+    <div class="tab-content" id="tab-status">
+        <div class="card">
+            <h2>📊 ۳. وضعیت کاربر</h2>
+            <p style="color:#888; font-size:13px; margin-bottom:12px;">
+                GET /api/me/status
+            </p>
 
-    payBtn.addEventListener("click", async () => {
+            <div class="btn-group">
+                <button class="btn-primary" onclick="getUserStatus()">🔄 دریافت وضعیت</button>
+            </div>
+
+            <div class="response-box" id="status-response"></div>
+        </div>
+
+        <div class="card">
+            <h2>داشبورد کاربر</h2>
+            <div class="info-box" id="status-dashboard">
+                <div class="info-row">
+                    <span class="info-label">وضعیت اشتراک</span>
+                    <span class="info-value" id="dash-active">-</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">موجودی داخلی</span>
+                    <span class="info-value" id="dash-balance">-</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">پاداش فعلی</span>
+                    <span class="info-value" id="dash-reward">-</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">مبلغ قفل‌شده</span>
+                    <span class="info-value" id="dash-locked">-</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">موجودی قابل برداشت</span>
+                    <span class="info-value" id="dash-available">-</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">آدرس کیف پول</span>
+                    <span class="info-value" id="dash-wallet">-</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">تاریخ فعال‌سازی</span>
+                    <span class="info-value" id="dash-activation">-</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============ TAB 4: PAYMENT ============ -->
+    <div class="tab-content" id="tab-payment">
+
+        <!-- Payment Info -->
+        <div class="card">
+            <h2>💳 ۴. اطلاعات پرداخت</h2>
+            <p style="color:#888; font-size:13px; margin-bottom:12px;">
+                GET /api/payment/info
+            </p>
+
+            <div class="btn-group">
+                <button class="btn-primary" onclick="getPaymentInfo()">📋 دریافت اطلاعات پرداخت</button>
+            </div>
+
+            <div class="info-box" id="payment-info-box" style="display:none;">
+                <div class="info-row">
+                    <span class="info-label">Destination Wallet</span>
+                    <span class="info-value copyable" id="pay-dest" onclick="copyText(this)">-</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Memo</span>
+                    <span class="info-value copyable" id="pay-memo" onclick="copyText(this)">-</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Recommended Amount</span>
+                    <span class="info-value" id="pay-amount">-</span>
+                </div>
+            </div>
+
+            <div class="response-box" id="payment-info-response"></div>
+        </div>
+
+        <!-- Payment Intent -->
+        <div class="card">
+            <h2>۵. ایجاد Payment Intent (پرداخت داخل اپ)</h2>
+            <p style="color:#888; font-size:13px; margin-bottom:12px;">
+                POST /api/payment/intent
+            </p>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>مبلغ (Smallest Unit)</label>
+                    <input type="number" id="intent-amount" placeholder="10000000" value="10000000">
+                </div>
+                <div class="form-group">
+                    <label>آدرس کیف پول فرستنده</label>
+                    <input type="text" id="intent-wallet" placeholder="EQ...">
+                </div>
+            </div>
+
+            <div class="btn-group">
+                <button class="btn-primary" onclick="createPaymentIntent()">🔖 ایجاد Intent</button>
+            </div>
+
+            <div class="response-box" id="intent-response"></div>
+        </div>
+
+        <!-- Update Payment Status -->
+        <div class="card">
+            <h2>۶. تغییر وضعیت Payment</h2>
+            <p style="color:#888; font-size:13px; margin-bottom:12px;">
+                PUT /api/payment/{id}/status
+            </p>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Payment ID</label>
+                    <input type="number" id="update-payment-id" placeholder="1">
+                </div>
+                <div class="form-group">
+                    <label>وضعیت جدید</label>
+                    <select id="update-payment-status">
+                        <option value="WalletSubmitted">WalletSubmitted</option>
+                        <option value="Signed">Signed</option>
+                        <option value="WaitingConfirmation">WaitingConfirmation</option>
+                        <option value="Expired">Expired</option>
+                        <option value="Failed">Failed</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>TxHash (اختیاری)</label>
+                <input type="text" id="update-payment-txhash" placeholder="Optional...">
+            </div>
+
+            <div class="btn-group">
+                <button class="btn-warning" onclick="updatePaymentStatus()">📝 تغییر وضعیت</button>
+            </div>
+
+            <div class="response-box" id="update-payment-response"></div>
+        </div>
+    </div>
+
+    <!-- ============ TAB 5: WEBHOOK ============ -->
+    <div class="tab-content" id="tab-webhook">
+        <div class="card">
+            <h2>🔗 ۷. شبیه‌سازی Webhook / Cron</h2>
+            <p style="color:#888; font-size:13px; margin-bottom:12px;">
+                POST /api/webhook/transaction
+            </p>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>TxHash</label>
+                    <input type="text" id="wh-txhash" placeholder="abc123...">
+                </div>
+                <div class="form-group">
+                    <label>Sender Wallet (اختیاری)</label>
+                    <input type="text" id="wh-sender" placeholder="EQ...">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Destination Wallet (Raw)</label>
+                    <input type="text" id="wh-dest" placeholder="0:abc...">
+                </div>
+                <div class="form-group">
+                    <label>Token Contract (Raw)</label>
+                    <input type="text" id="wh-token" placeholder="0:def...">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Amount (Smallest Unit)</label>
+                    <input type="number" id="wh-amount" placeholder="10000000" value="10000000">
+                </div>
+                <div class="form-group">
+                    <label>Memo</label>
+                    <input type="text" id="wh-memo" placeholder="Um1531257">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Is Successful</label>
+                    <select id="wh-success">
+                        <option value="true" selected>✅ Yes</option>
+                        <option value="false">❌ No</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Is Bounced</label>
+                    <select id="wh-bounced">
+                        <option value="false" selected>❌ No</option>
+                        <option value="true">✅ Yes</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Raw Payload (اختیاری)</label>
+                <textarea id="wh-payload" placeholder='{"raw": "data"}'></textarea>
+            </div>
+
+            <div class="btn-group">
+                <button class="btn-primary" onclick="sendWebhook()">🚀 ارسال تراکنش</button>
+                <button class="btn-secondary" onclick="fillWebhookSample()">🧪 پر کردن نمونه</button>
+            </div>
+
+            <div class="response-box" id="webhook-response"></div>
+        </div>
+    </div>
+
+    <!-- ============ TAB 6: WITHDRAW ============ -->
+    <div class="tab-content" id="tab-withdraw">
+        <div class="card">
+            <h2>💰 ۱۰. ثبت درخواست برداشت</h2>
+            <p style="color:#888; font-size:13px; margin-bottom:12px;">
+                POST /api/withdraw
+            </p>
+
+            <div class="form-group">
+                <label>مبلغ درخواستی (Smallest Unit)</label>
+                <input type="number" id="wd-amount" placeholder="10000000" value="10000000">
+            </div>
+
+            <!-- Preview -->
+            <div class="info-box" id="wd-preview">
+                <div class="info-row">
+                    <span class="info-label">Requested Amount</span>
+                    <span class="info-value" id="wd-preview-req">10 USDT</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Fee</span>
+                    <span class="info-value" id="wd-preview-fee">1 USDT</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">You Will Receive</span>
+                    <span class="info-value" id="wd-preview-net" style="color:#00d4aa;">9 USDT</span>
+                </div>
+            </div>
+
+            <div class="btn-group">
+                <button class="btn-primary" onclick="createWithdraw()">📤 ثبت برداشت</button>
+            </div>
+
+            <div class="response-box" id="withdraw-response"></div>
+        </div>
+    </div>
+
+    <!-- ============ TAB 7: ADMIN ============ -->
+    <div class="tab-content" id="tab-admin">
+
+        <!-- Admin JWT -->
+        <div class="card">
+            <h2>⚙️ تنظیمات ادمین</h2>
+
+            <div class="form-group">
+                <label>Admin JWT Token</label>
+                <input type="text" id="admin-jwt" placeholder="JWT Token ادمین را وارد کنید...">
+            </div>
+
+            <div class="btn-group">
+                <button class="btn-secondary" onclick="setAdminToken()">💾 ذخیره Token ادمین</button>
+            </div>
+        </div>
+
+        <!-- Pending Withdraws -->
+        <div class="card">
+            <h2>📋 لیست درخواست‌های برداشت</h2>
+            <p style="color:#888; font-size:13px; margin-bottom:12px;">
+                GET /api/admin/withdraw/pending
+            </p>
+
+            <div class="btn-group">
+                <button class="btn-primary" onclick="getPendingWithdraws()">🔄 بارگذاری</button>
+            </div>
+
+            <div id="admin-withdraws-table"></div>
+
+            <div class="response-box" id="admin-list-response"></div>
+        </div>
+
+        <!-- Process Withdraw -->
+        <div class="card">
+            <h2>▶️ شروع پردازش</h2>
+            <p style="color:#888; font-size:13px; margin-bottom:12px;">
+                PUT /api/admin/withdraw/{id}/process
+            </p>
+
+            <div class="form-group">
+                <label>Withdraw ID</label>
+                <input type="number" id="admin-process-id" placeholder="1">
+            </div>
+
+            <div class="btn-group">
+                <button class="btn-warning" onclick="startProcessing()">▶️ Start Processing</button>
+            </div>
+
+            <div class="response-box" id="admin-process-response"></div>
+        </div>
+
+        <!-- Complete Withdraw -->
+        <div class="card">
+            <h2>✅ تکمیل برداشت</h2>
+            <p style="color:#888; font-size:13px; margin-bottom:12px;">
+                PUT /api/admin/withdraw/{id}/complete
+            </p>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Withdraw ID</label>
+                    <input type="number" id="admin-complete-id" placeholder="1">
+                </div>
+                <div class="form-group">
+                    <label>TxHash</label>
+                    <input type="text" id="admin-complete-txhash" placeholder="abc123...">
+                </div>
+            </div>
+
+            <div class="btn-group">
+                <button class="btn-primary" onclick="completeWithdraw()">✅ Complete</button>
+            </div>
+
+            <div class="response-box" id="admin-complete-response"></div>
+        </div>
+
+        <!-- Fail Withdraw -->
+        <div class="card">
+            <h2>❌ رد کردن برداشت</h2>
+            <p style="color:#888; font-size:13px; margin-bottom:12px;">
+                PUT /api/admin/withdraw/{id}/fail
+            </p>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Withdraw ID</label>
+                    <input type="number" id="admin-fail-id" placeholder="1">
+                </div>
+                <div class="form-group">
+                    <label>دلیل رد</label>
+                    <input type="text" id="admin-fail-reason" placeholder="دلیل رد...">
+                </div>
+            </div>
+
+            <div class="btn-group">
+                <button class="btn-danger" onclick="failWithdraw()">❌ Fail</button>
+            </div>
+
+            <div class="response-box" id="admin-fail-response"></div>
+        </div>
+    </div>
+
+    <!-- ============ TOAST ============ -->
+    <div class="toast" id="toast"></div>
+
+    <!-- ============ JAVASCRIPT ============ -->
+    <script>
+
+    // ---- State ----
+    let currentJwt = '';
+    let adminJwt = '';
+    let currentUserId = null;
+
+    // ---- Helpers ----
+    function getBaseUrl() {
+        return document.getElementById('baseUrl').value.replace(/\/$/, '');
+    }
+
+    function showTab(name) {
+        document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById('tab-' + name).classList.add('active');
+        event.target.classList.add('active');
+    }
+
+    function showToast(message, type = 'success') {
+        const toast = document.getElementById('toast');
+        toast.textContent = message;
+        toast.className = 'toast show ' + type;
+        setTimeout(() => toast.classList.remove('show'), 3000);
+    }
+
+    function showResponse(elementId, data, isError = false) {
+        const el = document.getElementById(elementId);
+        el.textContent = JSON.stringify(data, null, 2);
+        el.className = 'response-box ' + (isError ? 'error' : 'success');
+    }
+
+    function copyToken() {
+        navigator.clipboard.writeText(currentJwt);
+        showToast('Token کپی شد!');
+    }
+
+    function copyText(el) {
+        navigator.clipboard.writeText(el.textContent);
+        showToast('کپی شد: ' + el.textContent);
+    }
+
+    function formatUsdt(smallest) {
+        return (smallest / 1000000).toFixed(2) + ' USDT';
+    }
+
+    async function apiCall(method, endpoint, body = null, useAdminToken = false) {
+        const url = getBaseUrl() + endpoint;
+        const token = useAdminToken ? adminJwt : currentJwt;
+
+        const options = {
+            method: method,
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        };
+
+        if (token) {
+            options.headers['Authorization'] = 'Bearer ' + token;
+        }
+
+        if (body) {
+            options.body = JSON.stringify(body);
+        }
 
         try {
+            const response = await fetch(url, options);
+            const data = await response.json();
+            return { ok: response.ok, status: response.status, data: data };
+        } catch (error) {
+            return { ok: false, status: 0, data: { error: error.message } };
+        }
+    }
 
-            payBtn.disabled = true;
-            status.innerHTML = "Waiting for payment...";
+    // ---- 1. AUTH ----
+    async function doLogin() {
+        const initData = document.getElementById('auth-initData').value;
+        if (!initData) {
+            showToast('initData را وارد کنید', 'error');
+            return;
+        }
 
-            const transaction = {
-                validUntil: Math.floor(Date.now() / 1000) + 600,
-                messages: [
-                    {
-                        address: "TBa3NZmemmM5rUpbpeVjFnUvJeHKn9fAoP",
-                        amount:  "10000000"
-                    }
-                ]
-            };
+        const result = await apiCall('POST', '/auth/telegram', { initData: initData });
 
-            const result = await tonConnectUI.sendTransaction(transaction);
+        showResponse('auth-response', result.data, !result.ok);
 
-            const telegramUser = Telegram.WebApp.initDataUnsafe.user;
+        if (result.ok) {
+            currentJwt = result.data.token;
+            currentUserId = result.data.userId;
+            document.getElementById('jwtToken').value = currentJwt;
+            document.getElementById('auth-status').textContent =
+                '✅ وارد شد | UserId: ' + result.data.userId;
+            showToast('ورود موفق!');
+        } else {
+            showToast('خطا در ورود', 'error');
+        }
+    }
 
-            const response = await fetch( "/api/payment/confirm",
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type":"application/json"
-                    },
-                    body: JSON.stringify({
-                        telegramUserId: telegramUser.id,
+    async function doLoginMock() {
+        // For testing without real Telegram initData
+        // You need to create a test endpoint or manually set JWT
+        const mockJwt = prompt('JWT Token تستی را وارد کنید:');
+        if (mockJwt) {
+            currentJwt = mockJwt;
+            document.getElementById('jwtToken').value = currentJwt;
+            document.getElementById('auth-status').textContent = '✅ وارد شد (Mock)';
+            showToast('Mock Login موفق!');
+        }
+    }
 
-                        userName:telegramUser.username,
+    // ---- 2. WALLET ----
+    async function connectWallet() {
+        const address = document.getElementById('wallet-address').value;
+        if (!address) {
+            showToast('آدرس کیف پول را وارد کنید', 'error');
+            return;
+        }
 
-                        walletAddress: walletAddress,
+        const result = await apiCall('POST', '/wallet/connect', {
+            walletAddress: address
+        });
 
-                        transactionHash: result.boc
-                    })
-                }
-            );
+        showResponse('wallet-response', result.data, !result.ok);
+
+        if (result.ok) {
+            document.getElementById('wallet-current').textContent =
+                result.data.walletAddress || address;
+            showToast('کیف پول متصل شد!');
+        } else {
+            showToast('خطا در اتصال', 'error');
+        }
+    }
+
+    async function disconnectWallet() {
+        const result = await apiCall('POST', '/wallet/disconnect');
+
+        showResponse('wallet-response', result.data, !result.ok);
+
+        if (result.ok) {
+            document.getElementById('wallet-current').textContent = 'متصل نیست';
+            showToast('کیف پول قطع شد!');
+        } else {
+            showToast('خطا در قطع اتصال', 'error');
+        }
+    }
+
+    // ---- 3. STATUS ----
+    async function getUserStatus() {
+        const result = await apiCall('GET', '/me/status');
+
+        showResponse('status-response', result.data, !result.ok);
+
+        if (result.ok && result.data.resultCode === 0) {
+            const d = result.data;
+            document.getElementById('dash-active').innerHTML =
+                d.isActive
+                    ? '<span class="badge badge-success">فعال ✅</span>'
+                    : '<span class="badge badge-danger">غیرفعال ❌</span>';
+            document.getElementById('dash-balance').textContent = formatUsdt(d.internalBalance);
+            document.getElementById('dash-reward').textContent = formatUsdt(d.currentReward);
+            document.getElementById('dash-locked').textContent = formatUsdt(d.lockedAmount);
+            document.getElementById('dash-available').textContent = formatUsdt(d.availableBalance);
+            document.getElementById('dash-wallet').textContent = d.walletAddress || 'ندارد';
+            document.getElementById('dash-activation').textContent = d.activationDate || 'فعال نشده';
+            showToast('وضعیت دریافت شد!');
+        }
+    }
+
+    // ---- 4. PAYMENT INFO ----
+    async function getPaymentInfo() {
+        const result = await apiCall('GET', '/payment/info');
+
+        showResponse('payment-info-response', result.data, !result.ok);
+
+        if (result.ok && result.data.resultCode === 0) {
+            document.getElementById('payment-info-box').style.display = 'block';
+            document.getElementById('pay-dest').textContent = result.data.destinationWallet;
+            document.getElementById('pay-memo').textContent = result.data.memo;
+            document.getElementById('pay-amount').textContent = formatUsdt(result.data.recommendedAmount);
+            showToast('اطلاعات پرداخت دریافت شد!');
+        }
+    }
+
+    // ---- 5. PAYMENT INTENT ----
+    async function createPaymentIntent() {
+        const amount = parseInt(document.getElementById('intent-amount').value);
+        const wallet = document.getElementById('intent-wallet').value;
+
+        if (!amount || amount <= 0) {
+            showToast('مبلغ را وارد کنید', 'error');
+            return;
+        }
+        if (!wallet) {
+            showToast('آدرس کیف پول را وارد کنید', 'error');
+            return;
+        }
+
+        const result = await apiCall('POST', '/payment/intent', {
+            amount: amount,
+            walletAddress: wallet
+        });
+
+        showResponse('intent-response', result.data, !result.ok);
+
+        if (result.ok) {
+            document.getElementById('update-payment-id').value = result.data.paymentId;
+            showToast('Intent ساخته شد! PaymentId: ' + result.data.paymentId);
+        }
+    }
+
+    // ---- 6. UPDATE PAYMENT STATUS ----
+    async function updatePaymentStatus() {
+        const id = document.getElementById('update-payment-id').value;
+        const status = document.getElementById('update-payment-status').value;
+        const txHash = document.getElementById('update-payment-txhash').value || null;
+
+        if (!id) {
+            showToast('Payment ID را وارد کنید', 'error');
+            return;
+        }
+
+        const result = await apiCall('PUT', '/payment/' + id + '/status', {
+            newStatus: status,
+            txHash: txHash
+        });
+
+        showResponse('update-payment-response', result.data, !result.ok);
+
+        if (result.ok) {
+            showToast('وضعیت تغییر کرد: ' + status);
+        }
+    }
+
+    // ---- 7. WEBHOOK ----
+    function fillWebhookSample() {
+        document.getElementById('wh-txhash').value = 'tx_' + Date.now();
+        document.getElementById('wh-sender').value = '0:sender123';
+        document.getElementById('wh-dest').value = ''; // باید از AppSettings پر شود
+        document.getElementById('wh-token').value = ''; // باید از AppSettings پر شود
+        document.getElementById('wh-amount').value = '10000000';
+        document.getElementById('wh-memo').value = 'Um153' + (currentUserId || '1');
+        showToast('نمونه پر شد! آدرس‌های Raw را خودتان وارد کنید.');
+    }
+
+    async function sendWebhook() {
+        const payload = {
+            txHash: document.getElementById('wh-txhash').value,
+            senderWallet: document.getElementById('wh-sender').value || null,
+            destinationWallet: document.getElementById('wh-dest').value,
+            tokenContract: document.getElementById('wh-token').value,
+            amount: parseInt(document.getElementById('wh-amount').value),
+            memo: document.getElementById('wh-memo').value || null,
+            isSuccessful: document.getElementById('wh-success').value === 'true',
+            isBounced: document.getElementById('wh-bounced').value === 'true',
+            rawPayload: document.getElementById('wh-payload').value || null
+        };
+
+        if (!payload.txHash) {
+            showToast('TxHash را وارد کنید', 'error');
+            return;
+        }
+
+        const url = getBaseUrl() + '/webhook/transaction';
+
+        try {
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
 
             const data = await response.json();
+            showResponse('webhook-response', data, !response.ok);
 
-            if (data.success) {
-                status.innerHTML = "✅ Membership Activated";
+            if (response.ok) {
+                showToast('تراکنش پردازش شد! Code: ' + data.resultCode);
             }
-            else {
-                status.innerHTML = "❌ Payment Failed";
-            }
-
+        } catch (error) {
+            showResponse('webhook-response', { error: error.message }, true);
+            showToast('خطا در ارسال', 'error');
         }
-        catch (e) {
+    }
 
-            console.log(e);
-
-            status.innerHTML = "❌ Payment Cancelled";
-
-            payBtn.disabled = false;
-        }
+    // ---- 8. WITHDRAW ----
+    // Preview calculator
+    document.getElementById('wd-amount').addEventListener('input', function () {
+        const amount = parseInt(this.value) || 0;
+        const fee = 1000000;
+        const net = amount - fee;
+        document.getElementById('wd-preview-req').textContent = formatUsdt(amount);
+        document.getElementById('wd-preview-fee').textContent = formatUsdt(fee);
+        document.getElementById('wd-preview-net').textContent = formatUsdt(Math.max(0, net));
     });
-</script>
+
+    async function createWithdraw() {
+        const amount = parseInt(document.getElementById('wd-amount').value);
+
+        if (!amount || amount <= 0) {
+            showToast('مبلغ را وارد کنید', 'error');
+            return;
+        }
+
+        const result = await apiCall('POST', '/withdraw', {
+            requestedAmount: amount
+        });
+
+        showResponse('withdraw-response', result.data, !result.ok);
+
+        if (result.ok) {
+            showToast('درخواست برداشت ثبت شد! ID: ' + result.data.withdrawId);
+        } else {
+            showToast('خطا: ' + result.data.resultMessage, 'error');
+        }
+    }
+
+    // ---- 9. ADMIN ----
+    function setAdminToken() {
+        adminJwt = document.getElementById('admin-jwt').value;
+        if (adminJwt) {
+            showToast('Token ادمین ذخیره شد!');
+        } else {
+            showToast('Token خالی است', 'error');
+        }
+    }
+
+    async function getPendingWithdraws() {
+        const result = await apiCall('GET', '/admin/withdraw/pending', null, true);
+
+        showResponse('admin-list-response', result.data, !result.ok);
+
+        if (result.ok && Array.isArray(result.data)) {
+            let html = '<table class="data-table"><thead><tr>';
+            html += '<th>ID</th><th>User</th><th>Telegram</th>';
+            html += '<th>آدرس</th><th>مبلغ</th><th>کارمزد</th>';
+            html += '<th>خالص</th><th>وضعیت</th><th>تاریخ</th><th>عملیات</th>';
+            html += '</tr></thead><tbody>';
+
+            result.data.forEach(w => {
+                html += '<tr>';
+                html += '<td>' + w.withdrawId + '</td>';
+                html += '<td>' + w.userId + '</td>';
+                html += '<td>' + w.telegramUserId + '</td>';
+                html += '<td style="font-size:11px;word-break:break-all;">' + w.walletAddress + '</td>';
+                html += '<td>' + formatUsdt(w.requestedAmount) + '</td>';
+                html += '<td>' + formatUsdt(w.feeAmount) + '</td>';
+                html += '<td style="color:#00d4aa;">' + formatUsdt(w.netAmount) + '</td>';
+                html += '<td><span class="badge badge-' +
+                    (w.status === 'Pending' ? 'warning' : 'info') + '">' +
+                    w.status + '</span></td>';
+                html += '<td style="font-size:11px;">' +
+                    new Date(w.createdAt).toLocaleString('fa-IR') + '</td>';
+                html += '<td>';
+
+                if (w.status === 'Pending') {
+                    html += '<button class="btn-warning btn-small" onclick="quickProcess(' +
+                        w.withdrawId + ')">▶️</button> ';
+                }
+
+                html += '<button class="btn-danger btn-small" onclick="quickFail(' +
+                    w.withdrawId + ')">❌</button>';
+                html += '</td>';
+                html += '</tr>';
+            });
+
+            html += '</tbody></table>';
+            document.getElementById('admin-withdraws-table').innerHTML = html;
+            showToast(result.data.length + ' درخواست یافت شد');
+        }
+    }
+
+    function quickProcess(id) {
+        document.getElementById('admin-process-id').value = id;
+        startProcessing();
+    }
+
+    function quickFail(id) {
+        const reason = prompt('دلیل رد را وارد کنید:');
+        if (reason) {
+            document.getElementById('admin-fail-id').value = id;
+            document.getElementById('admin-fail-reason').value = reason;
+            failWithdraw();
+        }
+    }
+
+    async function startProcessing() {
+        const id = document.getElementById('admin-process-id').value;
+        if (!id) {
+            showToast('Withdraw ID را وارد کنید', 'error');
+            return;
+        }
+
+        const result = await apiCall('PUT', '/admin/withdraw/' + id + '/process',
+            null, true);
+
+        showResponse('admin-process-response', result.data, !result.ok);
+
+        if (result.ok) {
+            document.getElementById('admin-complete-id').value = id;
+            showToast('پردازش شروع شد! حالا تراکنش ارسال کنید.');
+            getPendingWithdraws();
+        }
+    }
+
+    async function completeWithdraw() {
+        const id = document.getElementById('admin-complete-id').value;
+        const txHash = document.getElementById('admin-complete-txhash').value;
+
+        if (!id) {
+            showToast('Withdraw ID را وارد کنید', 'error');
+            return;
+        }
+        if (!txHash) {
+            showToast('TxHash را وارد کنید', 'error');
+            return;
+        }
+
+        const result = await apiCall('PUT', '/admin/withdraw/' + id + '/complete', {
+            txHash: txHash
+        }, true);
+
+        showResponse('admin-complete-response', result.data, !result.ok);
+
+        if (result.ok) {
+            showToast('برداشت تکمیل شد! ✅');
+            getPendingWithdraws();
+        }
+    }
+
+    async function failWithdraw() {
+        const id = document.getElementById('admin-fail-id').value;
+        const reason = document.getElementById('admin-fail-reason').value;
+
+        if (!id) {
+            showToast('Withdraw ID را وارد کنید', 'error');
+            return;
+        }
+        if (!reason) {
+            showToast('دلیل رد را وارد کنید', 'error');
+            return;
+        }
+
+        const result = await apiCall('PUT', '/admin/withdraw/' + id + '/fail', {
+            failReason: reason
+        }, true);
+
+        showResponse('admin-fail-response', result.data, !result.ok);
+
+        if (result.ok) {
+            showToast('برداشت رد شد! ❌');
+            getPendingWithdraws();
+        }
+    }
+
+    </script>
 
 </body>
 </html>
