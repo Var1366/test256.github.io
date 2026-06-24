@@ -909,16 +909,26 @@
         <!-- ======== PAGE: HISTORY ======== -->
         <div class="page" id="page-history">
             <div class="section-title">📜 تاریخچه</div>
+
             <div class="card" style="padding:0;">
                 <div id="historyList">
                     <div class="empty-state">
                         <div class="es-icon">📭</div>
-                        <div class="es-text">تاریخچه‌ای وجود ندارد</div>
+                        <div class="es-text">در حال بارگذاری...</div>
                     </div>
                 </div>
             </div>
+
+            <!-- Load More -->
+            <div style="padding:16px 20px; text-align:center;" id="historyLoadMore">
+            </div>
         </div>
 
+        <!-- ============ TX DETAIL MODAL ============ -->
+        <div class="modal-overlay" id="txDetailModal">
+            <div class="modal-content" id="txDetailContent">
+            </div>
+        </div>
     </div>
 
     <!-- ============ BOTTOM NAV ============ -->
@@ -997,7 +1007,7 @@
         // CONFIG
         // ==================================================
         const CONFIG = {
-            API_BASE_URL: 'https://192.168.1.103:7168/api',
+            API_BASE_URL: 'https://192168.1.103:7168/api',
             TON_CONNECT_MANIFEST: 'https://var1366.github.io/test256.github.io/tonconnect-manifest.json',
             WITHDRAW_FEE: 1000000, // 1 USDT in smallest unit
             WITHDRAW_MIN: 10000000, // 10 USDT in smallest unit
@@ -1474,6 +1484,7 @@
             // Refresh data on certain pages
             if (name === 'home') refreshStatus();
             if (name === 'withdraw') updateWithdrawPreview();
+            if (name === 'history') loadHistory();     // ← اضافه شد
         }
 
         // ==================================================
@@ -1510,6 +1521,226 @@
                 toast.style.transition = 'all 0.3s';
                 setTimeout(() => toast.remove(), 300);
             }, 3000);
+        }
+
+        // ==================================================
+        // HISTORY
+        // ==================================================
+        let historyPage = 1;
+        let historyTotal = 0;
+        const historyLimit = 20;
+
+        // Entry type display config
+        const entryTypeConfig = {
+            'DepositConfirmed': {
+                icon: '📥',
+                label: 'واریز',
+                colorClass: 'positive',
+                iconClass: 'deposit'
+            },
+            'ActivationCharge': {
+                icon: '⚡',
+                label: 'فعال‌سازی اشتراک',
+                colorClass: 'negative',
+                iconClass: 'withdraw'
+            },
+            'InternalBalanceIncrease': {
+                icon: '💰',
+                label: 'افزایش موجودی',
+                colorClass: 'positive',
+                iconClass: 'deposit'
+            },
+            'WithdrawLocked': {
+                icon: '🔒',
+                label: 'قفل برداشت',
+                colorClass: 'negative',
+                iconClass: 'withdraw'
+            },
+            'WithdrawUnlocked': {
+                icon: '🔓',
+                label: 'آزادسازی قفل',
+                colorClass: 'positive',
+                iconClass: 'deposit'
+            },
+            'WithdrawCompleted': {
+                icon: '📤',
+                label: 'برداشت موفق',
+                colorClass: 'negative',
+                iconClass: 'withdraw'
+            },
+            'WithdrawReleased': {
+                icon: '🔓',
+                label: 'بازگشت موجودی',
+                colorClass: 'positive',
+                iconClass: 'deposit'
+            },
+            'WithdrawFee': {
+                icon: '💸',
+                label: 'کارمزد برداشت',
+                colorClass: 'negative',
+                iconClass: 'withdraw'
+            },
+            'RewardConsumed': {
+                icon: '🎁',
+                label: 'مصرف پاداش',
+                colorClass: 'negative',
+                iconClass: 'withdraw'
+            }
+        };
+
+        async function loadHistory(reset = true) {
+            if (reset) {
+                historyPage = 1;
+                document.getElementById('historyList').innerHTML =
+                    '<div class="empty-state"><div class="es-icon">⏳</div>' +
+                    '<div class="es-text">در حال بارگذاری...</div></div>';
+            }
+
+            const result = await apiCall('GET',
+                `/me/history?page=${historyPage}&limit=${historyLimit}`);
+
+            if (!result.ok || result.data.resultCode !== 0) {
+                document.getElementById('historyList').innerHTML =
+                    '<div class="empty-state"><div class="es-icon">❌</div>' +
+                    '<div class="es-text">خطا در دریافت تاریخچه</div></div>';
+                return;
+            }
+
+            historyTotal = result.data.totalCount;
+            const items = result.data.items;
+
+            if (items.length === 0 && historyPage === 1) {
+                document.getElementById('historyList').innerHTML =
+                    '<div class="empty-state"><div class="es-icon">📭</div>' +
+                    '<div class="es-text">تاریخچه‌ای وجود ندارد</div></div>';
+                document.getElementById('historyLoadMore').innerHTML = '';
+                return;
+            }
+
+            let html = '';
+
+            if (reset) {
+                html = '';
+            } else {
+                html = document.getElementById('historyList').innerHTML;
+            }
+
+            items.forEach(item => {
+                const config = entryTypeConfig[item.entryType] || {
+                    icon: '📋',
+                    label: item.entryType,
+                    colorClass: 'positive',
+                    iconClass: 'deposit'
+                };
+
+                const amountFormatted = formatUsdtNumber(Math.abs(item.amount));
+                const sign = item.amount >= 0 ? '+' : '-';
+                const date = new Date(item.createdAt);
+                const dateStr = date.toLocaleDateString('fa-IR') + ' ' +
+                    date.toLocaleTimeString('fa-IR', {
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    });
+
+                html += `
+            <div class="tx-item" onclick="showTxDetail('${item.entryType}', '${item.txHash || ''}', ${item.amount}, '${dateStr}', '${item.refStatus || ''}', '${item.meta || ''}')">
+                <div class="tx-icon ${config.iconClass}">
+                    ${config.icon}
+                </div>
+                <div class="tx-info">
+                    <div class="tx-type">${config.label}</div>
+                    <div class="tx-date">${dateStr}</div>
+                </div>
+                <div class="tx-amount ${config.colorClass}">
+                    ${sign}${amountFormatted}
+                </div>
+            </div>
+        `;
+            });
+
+            document.getElementById('historyList').innerHTML = html;
+
+            // Load more button
+            const loaded = historyPage * historyLimit;
+            if (loaded < historyTotal) {
+                document.getElementById('historyLoadMore').innerHTML =
+                    `<button class="btn btn-outline" onclick="loadMoreHistory()" style="width:auto; padding:10px 30px;">
+                بارگذاری بیشتر (${loaded}/${historyTotal})
+            </button>`;
+            } else {
+                document.getElementById('historyLoadMore').innerHTML =
+                    historyTotal > 0
+                        ? `<span style="color:var(--text-muted); font-size:12px;">
+                     تمام ${historyTotal} مورد نمایش داده شد
+                   </span>`
+                        : '';
+            }
+        }
+
+        async function loadMoreHistory() {
+            historyPage++;
+            await loadHistory(false);
+        }
+
+        function showTxDetail(entryType, txHash, amount, date, status, meta) {
+            const config = entryTypeConfig[entryType] || {
+                icon: '📋', label: entryType
+            };
+
+            let detailHtml = `
+        <div class="modal-handle"></div>
+        <div class="modal-title">${config.icon} ${config.label}</div>
+        <div class="pay-info-box">
+            <div class="pay-info-row">
+                <span class="pir-label">مبلغ</span>
+                <span class="pir-value">${formatUsdt(Math.abs(amount))}</span>
+            </div>
+            <div class="pay-info-row">
+                <span class="pir-label">تاریخ</span>
+                <span class="pir-value">${date}</span>
+            </div>
+    `;
+
+            if (txHash) {
+                detailHtml += `
+            <div class="pay-info-row">
+                <span class="pir-label">TxHash</span>
+                <span class="pir-value" style="font-size:11px;">
+                    ${shortenAddress(txHash)}
+                    <button class="copy-btn" onclick="navigator.clipboard.writeText('${txHash}'); showToast('کپی شد');">کپی</button>
+                </span>
+            </div>
+        `;
+            }
+
+            if (status) {
+                detailHtml += `
+            <div class="pay-info-row">
+                <span class="pir-label">وضعیت</span>
+                <span class="pir-value">${status}</span>
+            </div>
+        `;
+            }
+
+            if (meta) {
+                detailHtml += `
+            <div class="pay-info-row">
+                <span class="pir-label">توضیحات</span>
+                <span class="pir-value">${meta}</span>
+            </div>
+        `;
+            }
+
+            detailHtml += `
+        </div>
+        <button class="btn btn-outline" style="margin-top:16px;"
+                onclick="closeModal('txDetailModal')">
+            بستن
+        </button>
+    `;
+
+            document.getElementById('txDetailContent').innerHTML = detailHtml;
+            openModal('txDetailModal');
         }
 
         // ==================================================
